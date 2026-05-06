@@ -125,30 +125,29 @@ namespace GestaoAcademica.Migrations
 
 			migrationBuilder.InsertData(
 	            table: "Disciplinas",
-	            columns: new[] { "Id", "CargaHoraria", "Codigo", "Nome", "CursoId" },
+	            columns: new[] { "Id", "CargaHoraria", "Codigo", "Nome" },
 	            values: new object[,]
 	            {
                     // ===== ADS (CursoId = 1) =====
-                    { 1, 80, "ADS101", "Algoritmos e Logica de Programacao", 1 },
-		            { 2, 80, "ADS102", "Estrutura de Dados", 1 },
+                    { 1, 80, "ADS101", "Algoritmos e Logica de Programacao" },
+		            { 2, 80, "ADS102", "Estrutura de Dados" },
 
                     // ===== Sistemas de Informacao (CursoId = 2) =====
                    
-		            { 3, 80, "SI101", "Analise de Sistemas", 2 },
-		            { 4, 80, "SI102", "Gestao de Projetos", 2 },
+		            { 3, 80, "SI101", "Analise de Sistemas" },
+		            { 4, 80, "SI102", "Gestao de Projetos" },
 
                     // ===== Ciencia da Computacao (CursoId = 3) =====
-                    { 5, 80, "CC101", "Calculo I", 3 },
-		            { 6, 80, "CC102", "Teoria da Computacao", 3 },
-
+                    { 5, 80, "CC101", "Calculo I" },
+		            { 6, 80, "CC102", "Teoria da Computacao" },
                     // ===== Engenharia de Software (CursoId = 4) =====
                    
-		            { 7, 80, "ES101", "Arquitetura de Software", 4 },
-		            { 8, 80, "ES102", "Testes de Software", 4 },
+		            { 7, 80, "ES101", "Arquitetura de Software" },
+		            { 8, 80, "ES102", "Testes de Software" },
 
                     // ===== Seguranca da Informacao (CursoId = 5) =====
-                    { 9, 80, "SEG101", "Criptografia", 5 },
-		            { 10, 80, "SEG102", "Seguranca de Redes", 5 },
+                    { 9, 80, "SEG101", "Criptografia" },
+		            { 10, 80, "SEG102", "Seguranca de Redes" },
 	            });
 
 			migrationBuilder.InsertData(

@@ -32,6 +32,7 @@ public class AlunosController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> GetById(int id)
     {
+        // Busca o aluno pelo ID usando o serviço
         var aluno = await _service.BuscarPorIdAsync(id);
         return aluno is null
             ? NotFound(new { sucesso = false, mensagem = "Aluno nao encontrado." })
@@ -44,6 +45,7 @@ public class AlunosController : ControllerBase
         try
         {
             var aluno = await _service.CriarAsync(dto);
+            // Retorna 201 Created com a localização do novo recurso e os dados do aluno criado
             return CreatedAtAction(nameof(GetById), new { id = aluno.Id }, new
             {
                 sucesso = true,
@@ -63,6 +65,7 @@ public class AlunosController : ControllerBase
         try
         {
             var atualizado = await _service.AtualizarAsync(id, dto);
+            
             return atualizado
                 ? Ok(new { sucesso = true, mensagem = "Aluno atualizado com sucesso." })
                 : NotFound(new { sucesso = false, mensagem = "Aluno nao encontrado." });

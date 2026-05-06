@@ -71,12 +71,23 @@ namespace GestaoAcademica.Migrations
                         {
                             Id = 1,
                             Ativo = true,
-                            CursoId = 1,
+                            CursoId = 2,
                             DataNascimento = new DateOnly(2002, 4, 12),
                             Email = "ana.souza@academico.local",
                             Matricula = "20260001",
                             Nome = "Ana Souza"
-                        });
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Ativo = true,
+                            CursoId = 1,
+                            DataNascimento = new DateOnly(2008, 3, 17),
+                            Email = "viniciuscorreia@academico.local",
+                            Matricula = "20260002",
+                            Nome = "Vinicius Correia"
+                        }
+                    );
                 });
 
             modelBuilder.Entity("GestaoAcademica.Models.Curso", b =>
@@ -121,7 +132,29 @@ namespace GestaoAcademica.Migrations
                             Codigo = "SI",
                             DuracaoSemestres = 8,
                             Nome = "Sistemas de Informacao"
-                        });
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Codigo = "CC",
+                            DuracaoSemestres = 8,
+                            Nome = "Ciencia da Computacao"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Codigo = "ES",
+                            DuracaoSemestres = 8,
+                            Nome = "Engenharia de Software"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Codigo = "SEG",
+                            DuracaoSemestres = 6,
+                            Nome = "Seguranca da Informacao"
+                        }
+                    );
                 });
 
             modelBuilder.Entity("GestaoAcademica.Models.Disciplina", b =>
@@ -153,20 +186,96 @@ namespace GestaoAcademica.Migrations
                     b.ToTable("Disciplinas");
 
                     b.HasData(
+                        // ===== ADS (CursoId = 1) =====
                         new
                         {
                             Id = 1,
                             CargaHoraria = 80,
-                            Codigo = "WEB101",
-                            Nome = "Programacao Web"
+                            Codigo = "ADS101",
+                            Nome = "Algoritmos e Logica de Programacao",
+                            CursoId = 1
                         },
                         new
                         {
                             Id = 2,
                             CargaHoraria = 80,
-                            Codigo = "BD101",
-                            Nome = "Banco de Dados"
-                        });
+                            Codigo = "ADS102",
+                            Nome = "Estrutura de Dados",
+                            CursoId = 1
+                        },
+
+                        // ===== Sistemas de Informacao (CursoId = 2) =====
+                        new
+                        {
+                            Id = 3,
+                            CargaHoraria = 80,
+                            Codigo = "SI101",
+                            Nome = "Analise de Sistemas",
+                            CursoId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CargaHoraria = 80,
+                            Codigo = "SI102",
+                            Nome = "Gestao de Projetos",
+                            CursoId = 2
+                        },
+
+                        // ===== Ciencia da Computacao (CursoId = 3) =====
+                        new
+                        {
+                            Id = 5,
+                            CargaHoraria = 80,
+                            Codigo = "CC101",
+                            Nome = "Calculo I",
+                            CursoId = 3
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CargaHoraria = 80,
+                            Codigo = "CC102",
+                            Nome = "Teoria da Computacao",
+                            CursoId = 3
+                        },
+
+                        // ===== Engenharia de Software (CursoId = 4) =====
+                        new
+                        {
+                            Id = 7,
+                            CargaHoraria = 80,
+                            Codigo = "ES101",
+                            Nome = "Arquitetura de Software",
+                            CursoId = 4
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CargaHoraria = 80,
+                            Codigo = "ES102",
+                            Nome = "Testes de Software",
+                            CursoId = 4
+                        },
+
+                        // ===== Seguranca da Informacao (CursoId = 5) =====
+                        new
+                        {
+                            Id = 9,
+                            CargaHoraria = 80,
+                            Codigo = "SEG101",
+                            Nome = "Criptografia",
+                            CursoId = 5
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CargaHoraria = 80,
+                            Codigo = "SEG102",
+                            Nome = "Seguranca de Redes",
+                            CursoId = 5
+                        }
+                    );
                 });
 
             modelBuilder.Entity("GestaoAcademica.Models.MatriculaDisciplina", b =>
