@@ -111,25 +111,47 @@ namespace GestaoAcademica.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.InsertData(
-                table: "Cursos",
-                columns: new[] { "Id", "Codigo", "DuracaoSemestres", "Nome" },
-                values: new object[,]
-                {
-                    { 1, "ADS", 5, "Analise e Desenvolvimento de Sistemas" },
-                    { 2, "SI", 8, "Sistemas de Informacao" }
-                });
+			migrationBuilder.InsertData(
+	            table: "Cursos",
+	            columns: new[] { "Id", "Codigo", "DuracaoSemestres", "Nome" },
+	            values: new object[,]
+	            {
+		            { 1, "ADS", 5, "Analise e Desenvolvimento de Sistemas" },
+		            { 2, "SI", 8, "Sistemas de Informacao" },
+		            { 3, "CC", 8, "Ciencia da Computacao" },
+		            { 4, "ES", 8, "Engenharia de Software" },
+		            { 5, "SEG", 6, "Seguranca da Informacao" }
+	            });
 
-            migrationBuilder.InsertData(
-                table: "Disciplinas",
-                columns: new[] { "Id", "CargaHoraria", "Codigo", "Nome" },
-                values: new object[,]
-                {
-                    { 1, 80, "WEB101", "Programacao Web" },
-                    { 2, 80, "BD101", "Banco de Dados" }
-                });
+			migrationBuilder.InsertData(
+	            table: "Disciplinas",
+	            columns: new[] { "Id", "CargaHoraria", "Codigo", "Nome", "CursoId" },
+	            values: new object[,]
+	            {
+                    // ===== ADS (CursoId = 1) =====
+                    { 1, 80, "ADS101", "Algoritmos e Logica de Programacao", 1 },
+		            { 2, 80, "ADS102", "Estrutura de Dados", 1 },
 
-            migrationBuilder.InsertData(
+                    // ===== Sistemas de Informacao (CursoId = 2) =====
+                   
+		            { 3, 80, "SI101", "Analise de Sistemas", 2 },
+		            { 4, 80, "SI102", "Gestao de Projetos", 2 },
+
+                    // ===== Ciencia da Computacao (CursoId = 3) =====
+                    { 5, 80, "CC101", "Calculo I", 3 },
+		            { 6, 80, "CC102", "Teoria da Computacao", 3 },
+
+                    // ===== Engenharia de Software (CursoId = 4) =====
+                   
+		            { 7, 80, "ES101", "Arquitetura de Software", 4 },
+		            { 8, 80, "ES102", "Testes de Software", 4 },
+
+                    // ===== Seguranca da Informacao (CursoId = 5) =====
+                    { 9, 80, "SEG101", "Criptografia", 5 },
+		            { 10, 80, "SEG102", "Seguranca de Redes", 5 },
+	            });
+
+			migrationBuilder.InsertData(
                 table: "Alunos",
                 columns: new[] { "Id", "Ativo", "CursoId", "DataNascimento", "Email", "Matricula", "Nome" },
                 values: new object[] { 1, true, 1, new DateOnly(2002, 4, 12), "ana.souza@academico.local", "20260001", "Ana Souza" });

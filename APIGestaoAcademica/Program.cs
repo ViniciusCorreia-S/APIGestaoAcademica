@@ -111,6 +111,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Habilitando a interface web em wwwroot (index.html, app.js, styles.css)
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 // Habilitando CORS para a interface web
 app.UseCors("InterfaceWeb");
 
