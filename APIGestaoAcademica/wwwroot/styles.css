@@ -2,12 +2,34 @@ body {
     background: #f7f8fb;
 }
 
+.navbar-brand {
+    letter-spacing: 0;
+}
+
 .card {
     border-radius: 8px;
 }
 
 .table {
     background: #fff;
+}
+
+.table td,
+.table th {
+    white-space: nowrap;
+}
+
+.table td:nth-child(2) {
+    white-space: normal;
+    min-width: 220px;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.alert:empty {
+    display: none;
 }
 
 .status-dot {
@@ -24,4 +46,15 @@ body {
 
 .status-dot.inactive {
     background: #dc3545;
+}
+
+@media (max-width: 576px) {
+    .table td,
+    .table th {
+        font-size: .92rem;
+    }
+
+    .text-end .btn {
+        margin-top: .25rem;
+    }
 }
