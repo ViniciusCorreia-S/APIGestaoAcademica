@@ -7,6 +7,7 @@ namespace GestaoAcademica.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+// Apenas membros da equipe acadêmica podem acessar as operações de matrícula, garantindo que apenas pessoal autorizado possa gerenciar as matrículas dos alunos
 [Authorize(Policy = "EquipeAcademica")]
 public class MatriculasController : ControllerBase
 {
@@ -47,6 +48,7 @@ public class MatriculasController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    // Somente administradores podem remover matrículas, garantindo que apenas pessoal autorizado possa realizar essa ação crítica
     [Authorize(Policy = "SomenteAdministrador")]
     public async Task<IActionResult> Delete(int id)
     {

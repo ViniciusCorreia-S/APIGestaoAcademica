@@ -66,26 +66,27 @@ namespace GestaoAcademica.Migrations
 
                     b.ToTable("Alunos");
 
+                    // Dados estaticos para teste
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Ativo = false,
-                            CursoId = 2,
-                            DataNascimento = new DateOnly(2002, 4, 12),
-                            Email = "ana.souza@academico.local",
-                            Matricula = "20260001",
-                            Nome = "Ana Souza"
-                        },
-                        new
-                        {
-                            Id = 2,
                             Ativo = true,
                             CursoId = 1,
                             DataNascimento = new DateOnly(2008, 3, 17),
                             Email = "viniciuscorreia@academico.local",
                             Matricula = "20260002",
                             Nome = "Vinicius Correia"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Ativo = false,
+                            CursoId = 2,
+                            DataNascimento = new DateOnly(2002, 4, 12),
+                            Email = "ana.souza@academico.local",
+                            Matricula = "20260001",
+                            Nome = "Ana Souza"
                         }
                     );
                 });
@@ -118,6 +119,7 @@ namespace GestaoAcademica.Migrations
 
                     b.ToTable("Cursos");
 
+                    // Dados estaticos para teste
                     b.HasData(
                         new
                         {
@@ -185,6 +187,7 @@ namespace GestaoAcademica.Migrations
 
                     b.ToTable("Disciplinas");
 
+                    // Dados estaticos para teste
                     b.HasData(
                         // ===== ADS (CursoId = 1) =====
                         new

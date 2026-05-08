@@ -16,20 +16,26 @@ public class AlunoRepository : IAlunoRepository
     public async Task<List<Aluno>> ListarTodosAsync()
     {
         return await _context.Alunos
+            // Inclui o curso relacionado ao aluno
             .Include(aluno => aluno.Curso)
+            // Ordena os alunos por nome
             .OrderBy(aluno => aluno.Nome)
+            // Converte o resultado para uma lista
             .ToListAsync();
     }
 
     public async Task<Aluno?> BuscarPorIdAsync(int id)
     {
         return await _context.Alunos
+            // Inclui o curso relacionado ao aluno
             .Include(aluno => aluno.Curso)
+            // Filtra o aluno pelo ID
             .FirstOrDefaultAsync(aluno => aluno.Id == id);
     }
 
     public async Task<bool> ExisteEmailAsync(string email, int? ignorarAlunoId = null)
     {
+        // Verifica se existe algum aluno com o email fornecido, ignorando um aluno específico (para atualizações)
         return await _context.Alunos.AnyAsync(aluno =>
             aluno.Email == email && (!ignorarAlunoId.HasValue || aluno.Id != ignorarAlunoId));
     }

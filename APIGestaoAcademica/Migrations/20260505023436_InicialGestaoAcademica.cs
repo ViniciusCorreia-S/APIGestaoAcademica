@@ -17,6 +17,7 @@ namespace GestaoAcademica.Migrations
             migrationBuilder.AlterDatabase()
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            // ================================== TABELA CURSOS ==================================
             migrationBuilder.CreateTable(
                 name: "Cursos",
                 columns: table => new
@@ -34,7 +35,8 @@ namespace GestaoAcademica.Migrations
                     table.PrimaryKey("PK_Cursos", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
-
+            
+            // ================================== TABELA DISCIPLINAS ==================================
             migrationBuilder.CreateTable(
                 name: "Disciplinas",
                 columns: table => new
@@ -53,6 +55,7 @@ namespace GestaoAcademica.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            // ================================== TABELA ALUNOS ==================================
             migrationBuilder.CreateTable(
                 name: "Alunos",
                 columns: table => new
@@ -80,7 +83,8 @@ namespace GestaoAcademica.Migrations
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
-
+            
+            // ================================== TABELA MATRICULAS DISCIPLINAS ==================================
             migrationBuilder.CreateTable(
                 name: "MatriculasDisciplinas",
                 columns: table => new
@@ -111,7 +115,8 @@ namespace GestaoAcademica.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-			migrationBuilder.InsertData(
+            // ================================== TABELA CURSOS ==================================
+            migrationBuilder.InsertData(
 	            table: "Cursos",
 	            columns: new[] { "Id", "Codigo", "DuracaoSemestres", "Nome" },
 	            values: new object[,]
@@ -122,7 +127,8 @@ namespace GestaoAcademica.Migrations
 		            { 4, "ES", 8, "Engenharia de Software" },
 		            { 5, "SEG", 6, "Seguranca da Informacao" }
 	            });
-
+            
+			// ================================== TABELA DISCIPLINAS ==================================
 			migrationBuilder.InsertData(
 	            table: "Disciplinas",
 	            columns: new[] { "Id", "CargaHoraria", "Codigo", "Nome" },
@@ -149,17 +155,19 @@ namespace GestaoAcademica.Migrations
                     { 9, 80, "SEG101", "Criptografia" },
 		            { 10, 80, "SEG102", "Seguranca de Redes" },
 	            });
-
+            
+			// ================================== TABELA ALUNOS ==================================
 			migrationBuilder.InsertData(
                 table: "Alunos",
                 columns: new[] { "Id", "Ativo", "CursoId", "DataNascimento", "Email", "Matricula", "Nome" },
                 values: new object[,] 
                 { 
-                    { 1, false, 2, new DateOnly(2002, 4, 12), "ana.souza@academico.local", "20260001", "Ana Souza" },
-                    { 2, true, 1, new DateOnly(2008, 3, 17), "viniciuscorreia@academico.local", "20260002", "Vinicius Correia"}
+                    { 1, true, 1, new DateOnly(2008, 3, 17), "viniciuscorreia@academico.local", "20260002", "Vinicius Correia"},
+                    { 2, false, 2, new DateOnly(2002, 4, 12), "ana.souza@academico.local", "20260001", "Ana Souza" }
                 }
 			);
 
+            // ================================== INDICES ==================================
             migrationBuilder.CreateIndex(
                 name: "IX_Alunos_CursoId",
                 table: "Alunos",

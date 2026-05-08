@@ -23,16 +23,20 @@ public class MatriculaService : IMatriculaService
 
     public async Task<MatriculaResponseDto> CriarAsync(MatriculaCreateDto dto)
     {
+        // Validar se o aluno existe e está ativo
         var aluno = await _alunoRepository.BuscarPorIdAsync(dto.AlunoId);
         if (aluno is null)
             throw new InvalidOperationException("Aluno informado nao foi encontrado.");
 
+        // Validar se o aluno está ativo
         if (!aluno.Ativo)
             throw new InvalidOperationException("Nao e possivel matricular aluno inativo.");
 
+        // Validar se a disciplina existe
         if (!await _matriculaRepository.ExisteDisciplinaAsync(dto.DisciplinaId))
             throw new InvalidOperationException("Disciplina informada nao foi encontrada.");
 
+        // Validar se o aluno já está matriculado na disciplina
         if (await _matriculaRepository.ExisteMatriculaAsync(dto.AlunoId, dto.DisciplinaId))
             throw new InvalidOperationException("Aluno ja esta matriculado nesta disciplina.");
 
@@ -60,6 +64,7 @@ public class MatriculaService : IMatriculaService
         return true;
     }
 
+    // Método auxiliar para mapear MatriculaDisciplina para MatriculaResponseDto
     private static MatriculaResponseDto MapearMatricula(MatriculaDisciplina matricula)
     {
         return new MatriculaResponseDto

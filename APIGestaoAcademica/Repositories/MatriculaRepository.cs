@@ -16,8 +16,10 @@ public class MatriculaRepository : IMatriculaRepository
     public async Task<List<MatriculaDisciplina>> ListarTodosAsync()
     {
         return await _context.MatriculasDisciplinas
+            // Carrega os dados relacionados de Aluno e Disciplina para cada matrícula
             .Include(matricula => matricula.Aluno)
             .Include(matricula => matricula.Disciplina)
+            // Ordena as matrículas pela data de matrícula, da mais recente para a mais antiga
             .OrderByDescending(matricula => matricula.DataMatricula)
             .ToListAsync();
     }
@@ -32,6 +34,7 @@ public class MatriculaRepository : IMatriculaRepository
 
     public async Task<bool> ExisteMatriculaAsync(int alunoId, int disciplinaId)
     {
+        // Verifica se já existe uma matrícula para o aluno na disciplina informada
         return await _context.MatriculasDisciplinas.AnyAsync(matricula =>
             matricula.AlunoId == alunoId && matricula.DisciplinaId == disciplinaId);
     }

@@ -21,7 +21,10 @@ public class CursoService : ICursoService
 
     public async Task<CursoResponseDto> CriarAsync(CursoCreateDto dto)
     {
-        var codigo = dto.Codigo.Trim().ToUpperInvariant();
+        var codigo = dto.Codigo.Trim()
+            // Remove espaços e converte para maiúsculas
+            .ToUpperInvariant();
+
         if (await _repository.ExisteCodigoAsync(codigo))
             throw new InvalidOperationException("Ja existe curso com este codigo.");
 
@@ -36,6 +39,7 @@ public class CursoService : ICursoService
         return MapearCurso(curso);
     }
 
+    // Método privado para mapear Curso para CursoResponseDto
     private static CursoResponseDto MapearCurso(Curso curso)
     {
         return new CursoResponseDto

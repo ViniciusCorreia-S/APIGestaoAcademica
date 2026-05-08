@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<Disciplina> Disciplinas => Set<Disciplina>();
     public DbSet<MatriculaDisciplina> MatriculasDisciplinas => Set<MatriculaDisciplina>();
 
+    // Configurações adicionais do modelo
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Aluno>()
@@ -35,7 +36,8 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<MatriculaDisciplina>()
             .HasIndex(matricula => new { matricula.AlunoId, matricula.DisciplinaId })
             .IsUnique();
-
+        
+        // Dados estaticos para teste
         modelBuilder.Entity<Curso>().HasData(
             new Curso { Id = 1, Nome = "Analise e Desenvolvimento de Sistemas", Codigo = "ADS", DuracaoSemestres = 5 },
             new Curso { Id = 2, Nome = "Sistemas de Informacao", Codigo = "SI", DuracaoSemestres = 8 },
@@ -44,6 +46,7 @@ public class AppDbContext : DbContext
             new Curso { Id = 5, Nome = "Seguranca da Informacao", Codigo = "SEG", DuracaoSemestres = 6 }
         );
 
+        // Dados estaticos para teste
         modelBuilder.Entity<Disciplina>().HasData(
             // ===== ADS (CursoId = 1) =====
             new Disciplina { Id = 1, Nome = "Algoritmos e Logica de Programacao", Codigo = "ADS101", CargaHoraria = 80 },
@@ -66,26 +69,27 @@ public class AppDbContext : DbContext
             new Disciplina { Id = 10, Nome = "Seguranca de Redes", Codigo = "SEG102", CargaHoraria = 80 }
         );
 
+        // Dados estaticos para teste
         modelBuilder.Entity<Aluno>().HasData(
             new Aluno
             {
                 Id = 1,
-                Nome = "Ana Souza",
-                Email = "ana.souza@academico.local",
-                Matricula = "20260001",
-                DataNascimento = new DateOnly(2002, 4, 12),
-                Ativo = false,
-                CursoId = 2
-            },
-            new Aluno
-            {
-                Id = 2,
                 Nome = "Vinicius Correia",
                 Email = "viniciuscorreia@academico.local",
                 Matricula = "20260002",
                 DataNascimento = new DateOnly(2008, 3, 17),
                 Ativo = true,
                 CursoId = 1
+            },
+            new Aluno
+            {
+                Id = 2,
+                Nome = "Ana Souza",
+                Email = "ana.souza@academico.local",
+                Matricula = "20260001",
+                DataNascimento = new DateOnly(2002, 4, 12),
+                Ativo = false,
+                CursoId = 2
             }
         );
     }

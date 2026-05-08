@@ -7,6 +7,7 @@ namespace GestaoAcademica.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+// Aplica a política de autorização "EquipeAcademica" a todas as ações deste controlador, exceto as que têm [AllowAnonymous]
 [Authorize(Policy = "EquipeAcademica")]
 public class AlunosController : ControllerBase
 {
@@ -29,6 +30,7 @@ public class AlunosController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    // Permite acesso anônimo a esta ação, permitindo que qualquer pessoa possa buscar um aluno por ID
     [AllowAnonymous]
     public async Task<IActionResult> GetById(int id)
     {

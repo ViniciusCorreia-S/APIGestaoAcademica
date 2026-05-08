@@ -31,19 +31,27 @@ public class AlunoService : IAlunoService
     {
         await ValidarCursoAsync(dto.CursoId);
 
+        // Verifica se a data de nascimento é futura
         if (dto.DataNascimento > DateOnly.FromDateTime(DateTime.Today))
             throw new InvalidOperationException("A data de nascimento nao pode ser futura.");
 
+        // Verifica se o email já existe para outro aluno
         if (await _alunoRepository.ExisteEmailAsync(dto.Email))
             throw new InvalidOperationException("Ja existe aluno cadastrado com este e-mail.");
 
+        // Verifica se a matrícula já existe para outro aluno
         if (await _alunoRepository.ExisteMatriculaAsync(dto.Matricula))
             throw new InvalidOperationException("Ja existe aluno cadastrado com esta matricula.");
 
         var aluno = new Aluno
         {
-            Nome = dto.Nome.Trim(),
-            Email = dto.Email.Trim().ToLowerInvariant(),
+            Nome = dto.Nome
+                // O nome é tratado para remover espaços extras
+                .Trim(),
+
+            Email = dto.Email.Trim()
+                // O email é convertido para minúsculas
+                .ToLowerInvariant(),
             Matricula = dto.Matricula.Trim(),
             DataNascimento = dto.DataNascimento,
             CursoId = dto.CursoId,
@@ -70,7 +78,10 @@ public class AlunoService : IAlunoService
         if (await _alunoRepository.ExisteEmailAsync(dto.Email, id))
             throw new InvalidOperationException("Ja existe outro aluno usando este e-mail.");
 
+        // Atualiza os campos do aluno,
+        // garantindo que o nome e email sejam tratados de forma consistente e que a matrícula não seja alterada
         aluno.Nome = dto.Nome.Trim();
+
         aluno.Email = dto.Email.Trim().ToLowerInvariant();
         aluno.DataNascimento = dto.DataNascimento;
         aluno.Ativo = dto.Ativo;
@@ -90,6 +101,7 @@ public class AlunoService : IAlunoService
         return true;
     }
 
+    // Valida se o curso existe antes de criar ou atualizar um aluno
     private async Task ValidarCursoAsync(int cursoId)
     {
         var curso = await _cursoRepository.BuscarPorIdAsync(cursoId);
@@ -97,6 +109,7 @@ public class AlunoService : IAlunoService
             throw new InvalidOperationException("Curso informado nao foi encontrado.");
     }
 
+    // Mapeia a entidade Aluno para o DTO de resposta, incluindo o nome do curso
     private static AlunoResponseDto MapearAluno(Aluno aluno)
     {
         return new AlunoResponseDto

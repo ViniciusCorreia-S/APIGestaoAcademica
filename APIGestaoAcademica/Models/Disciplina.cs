@@ -14,5 +14,6 @@ public class Disciplina
 
     public int CargaHoraria { get; set; }
 
+    // Relacionamento muitos-para-muitos com Aluno via MatriculaDisciplina
     public ICollection<MatriculaDisciplina> Matriculas { get; set; } = [];
 }

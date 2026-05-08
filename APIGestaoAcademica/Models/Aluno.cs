@@ -22,5 +22,6 @@ public class Aluno
     public int CursoId { get; set; }
     public Curso? Curso { get; set; }
 
+    // Relacionamento muitos-para-muitos com Disciplina via MatriculaDisciplina
     public ICollection<MatriculaDisciplina> Matriculas { get; set; } = [];
 }
