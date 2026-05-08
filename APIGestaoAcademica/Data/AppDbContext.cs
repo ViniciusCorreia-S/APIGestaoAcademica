@@ -74,7 +74,7 @@ public class AppDbContext : DbContext
                 Email = "ana.souza@academico.local",
                 Matricula = "20260001",
                 DataNascimento = new DateOnly(2002, 4, 12),
-                Ativo = true,
+                Ativo = false,
                 CursoId = 2
             },
             new Aluno

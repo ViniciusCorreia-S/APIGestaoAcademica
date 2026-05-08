@@ -153,7 +153,12 @@ namespace GestaoAcademica.Migrations
 			migrationBuilder.InsertData(
                 table: "Alunos",
                 columns: new[] { "Id", "Ativo", "CursoId", "DataNascimento", "Email", "Matricula", "Nome" },
-                values: new object[] { 1, true, 1, new DateOnly(2002, 4, 12), "ana.souza@academico.local", "20260001", "Ana Souza" });
+                values: new object[,] 
+                { 
+                    { 1, false, 2, new DateOnly(2002, 4, 12), "ana.souza@academico.local", "20260001", "Ana Souza" },
+                    { 2, true, 1, new DateOnly(2008, 3, 17), "viniciuscorreia@academico.local", "20260002", "Vinicius Correia"}
+                }
+			);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Alunos_CursoId",

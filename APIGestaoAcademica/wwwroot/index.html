@@ -8,117 +8,196 @@
     <link href="./styles.css" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+    <section class="login-page" id="loginPage">
         <div class="container">
-            <span class="navbar-brand fw-semibold">Gestão Acadêmica</span>
-            <div class="d-flex align-items-center gap-2">
-                <span class="badge text-bg-primary">GestonSys+</span>
-                <button class="btn btn-outline-secondary btn-sm d-none" id="btnLogout" type="button">Sair</button>
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-8 col-lg-5">
+                    <div class="card login-card shadow-sm">
+                        <div class="card-body p-4">
+                            <span class="badge text-bg-primary logo-badge mb-3">GestonSys+</span>
+                            <h1 class="h3 mb-2">Gestão Acadêmica</h1>
+                            <p class="text-muted mb-4">Entre para acessar alunos e matrículas.</p>
+
+                            <form id="loginForm" class="vstack gap-3">
+                                <div>
+                                    <label class="form-label" for="usuario">Usuário</label>
+                                    <input class="form-control" id="usuario" placeholder="Digite o usuário" autocomplete="username">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="senha">Senha</label>
+                                    <input class="form-control" id="senha" type="password" placeholder="Digite a senha" autocomplete="current-password">
+                                </div>
+                                <button class="btn btn-primary w-100" id="btnLogin" type="submit">Entrar</button>
+                            </form>
+
+                            <div class="alert alert-secondary mt-4 mb-0" id="loginStatus">Use admin/123456 ou secretaria/123456.</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
+    </section>
 
-    <main class="container py-4">
-        <section class="row g-3 align-items-end mb-4">
-            <div class="col-12 col-lg-5">
-                <label class="form-label" for="usuario">Usuário</label>
-                <input class="form-control" id="usuario" value="admin">
-            </div>
-            <div class="col-12 col-lg-5">
-                <label class="form-label" for="senha">Senha</label>
-                <input class="form-control" id="senha" type="password" value="123456">
-            </div>
-            <div class="col-12 col-lg-2 d-grid">
-                <button class="btn btn-primary" id="btnLogin" type="button">Entrar</button>
-            </div>
-            <div class="col-12">
-                <div class="alert alert-secondary mb-0" id="loginStatus">Use admin/123456 ou secretaria/123456.</div>
-            </div>
-        </section>
-
-        <section class="row g-4">
-            <div class="col-12 col-xl-4">
-                <div class="card">
-                    <div class="card-header fw-semibold">Cadastro de aluno</div>
-                    <div class="card-body">
-                        <form id="alunoForm" class="vstack gap-3">
-                            <input type="hidden" id="alunoId">
-                            <div>
-                                <label class="form-label" for="nome">Nome</label>
-                                <input class="form-control" id="nome" required maxlength="120">
-                            </div>
-                            <div>
-                                <label class="form-label" for="email">E-mail</label>
-                                <input class="form-control" id="email" type="email" required maxlength="160">
-                            </div>
-                            <div>
-                                <label class="form-label" for="matricula">Matrícula</label>
-                                <input class="form-control" id="matricula" required maxlength="20">
-                            </div>
-                            <div>
-                                <label class="form-label" for="dataNascimento">Data de nascimento</label>
-                                <input class="form-control" id="dataNascimento" type="date" required>
-                            </div>
-                            <div>
-                                <label class="form-label" for="cursoId">Curso</label>
-                                <select class="form-select" id="cursoId" required></select>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" id="ativo" type="checkbox" checked>
-                                <label class="form-check-label" for="ativo">Aluno ativo</label>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-success flex-fill" type="submit">Salvar</button>
-                                <button class="btn btn-outline-secondary" id="btnCancelar" type="button">Limpar</button>
-                            </div>
-                        </form>
-                    </div>
+    <section class="d-none" id="homePage">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+            <div class="container">
+                <span class="navbar-brand fw-semibold">Gestão Acadêmica</span>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge text-bg-primary logo-badge">GestonSys+</span>
+                    <button class="btn btn-outline-secondary btn-sm" id="btnLogout" type="button">Sair</button>
                 </div>
+            </div>
+        </nav>
+
+        <main class="container py-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
+                <div>
+                    <h1 class="h4 mb-1">Home</h1>
+                    <p class="text-muted mb-0">Gerencie alunos e realize matrículas em disciplinas.</p>
+                </div>
+                <button class="btn btn-outline-primary btn-sm align-self-md-start" id="btnAtualizar" type="button">Atualizar dados</button>
             </div>
 
-            <div class="col-12 col-xl-8">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h1 class="h4 mb-0">Alunos cadastrados</h1>
-                    <button class="btn btn-outline-primary btn-sm" id="btnAtualizar" type="button">Atualizar</button>
-                </div>
-                <div class="row g-2 mb-3">
-                    <div class="col-12 col-md-5">
-                        <label class="form-label" for="buscaAluno">Buscar</label>
-                        <input class="form-control" id="buscaAluno" placeholder="Nome, e-mail ou matrícula">
+            <ul class="nav nav-tabs mb-4" id="abasSistema" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="abaAlunosBotao" data-bs-toggle="tab" data-bs-target="#abaAlunos" type="button" role="tab" aria-controls="abaAlunos" aria-selected="true">Alunos</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="abaMatriculasBotao" data-bs-toggle="tab" data-bs-target="#abaMatriculas" type="button" role="tab" aria-controls="abaMatriculas" aria-selected="false">Matrículas</button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <section class="tab-pane fade show active" id="abaAlunos" role="tabpanel" aria-labelledby="abaAlunosBotao" tabindex="0">
+                    <div class="row g-4">
+                        <div class="col-12 col-xl-4">
+                            <div class="card">
+                                <div class="card-header fw-semibold">Cadastro de aluno</div>
+                                <div class="card-body">
+                                    <form id="alunoForm" class="vstack gap-3">
+                                        <input type="hidden" id="alunoId">
+                                        <div>
+                                            <label class="form-label" for="nome">Nome</label>
+                                            <input class="form-control" id="nome" required maxlength="120">
+                                        </div>
+                                        <div>
+                                            <label class="form-label" for="email">E-mail</label>
+                                            <input class="form-control" id="email" type="email" required maxlength="160">
+                                        </div>
+                                        <div>
+                                            <label class="form-label" for="matricula">Matrícula</label>
+                                            <input class="form-control" id="matricula" required maxlength="20">
+                                        </div>
+                                        <div>
+                                            <label class="form-label" for="dataNascimento">Data de nascimento</label>
+                                            <input class="form-control" id="dataNascimento" type="date" required>
+                                        </div>
+                                        <div>
+                                            <label class="form-label" for="cursoId">Curso</label>
+                                            <select class="form-select" id="cursoId" required></select>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" id="ativo" type="checkbox" checked>
+                                            <label class="form-check-label" for="ativo">Aluno ativo</label>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-success flex-fill" type="submit">Salvar</button>
+                                            <button class="btn btn-outline-secondary" id="btnCancelar" type="button">Limpar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-xl-8">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="h5 mb-0">Alunos cadastrados</h2>
+                            </div>
+                            <div class="row g-2 mb-3">
+                                <div class="col-12 col-md-5">
+                                    <label class="form-label" for="buscaAluno">Buscar</label>
+                                    <input class="form-control" id="buscaAluno" placeholder="Nome, e-mail ou matrícula">
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label class="form-label" for="filtroCurso">Curso</label>
+                                    <select class="form-select" id="filtroCurso">
+                                        <option value="">Todos os cursos</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <label class="form-label" for="filtroStatus">Status</label>
+                                    <select class="form-select" id="filtroStatus">
+                                        <option value="">Todos</option>
+                                        <option value="ativo">Ativos</option>
+                                        <option value="inativo">Inativos</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Matrícula</th>
+                                            <th>Nome</th>
+                                            <th>Curso</th>
+                                            <th>Status</th>
+                                            <th class="text-end">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="alunosTabela"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 col-md-4">
-                        <label class="form-label" for="filtroCurso">Curso</label>
-                        <select class="form-select" id="filtroCurso">
-                            <option value="">Todos os cursos</option>
-                        </select>
+                </section>
+
+                <section class="tab-pane fade" id="abaMatriculas" role="tabpanel" aria-labelledby="abaMatriculasBotao" tabindex="0">
+                    <div class="row g-4">
+                        <div class="col-12 col-xl-4">
+                            <div class="card">
+                                <div class="card-header fw-semibold">Realizar matrícula</div>
+                                <div class="card-body">
+                                    <form id="matriculaForm" class="vstack gap-3">
+                                        <div>
+                                            <label class="form-label" for="matriculaAlunoId">Aluno</label>
+                                            <select class="form-select" id="matriculaAlunoId" required></select>
+                                        </div>
+                                        <div>
+                                            <label class="form-label" for="matriculaDisciplinaId">Disciplina</label>
+                                            <select class="form-select" id="matriculaDisciplinaId" required></select>
+                                        </div>
+                                        <button class="btn btn-success" type="submit">Matricular</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-xl-8">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="h5 mb-0">Matrículas realizadas</h2>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Aluno</th>
+                                            <th>Disciplina</th>
+                                            <th>Data</th>
+                                            <th>Status</th>
+                                            <th class="text-end">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="matriculasTabela"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 col-md-3">
-                        <label class="form-label" for="filtroStatus">Status</label>
-                        <select class="form-select" id="filtroStatus">
-                            <option value="">Todos</option>
-                            <option value="ativo">Ativos</option>
-                            <option value="inativo">Inativos</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>Matrícula</th>
-                                <th>Nome</th>
-                                <th>Curso</th>
-                                <th>Status</th>
-                                <th class="text-end">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="alunosTabela"></tbody>
-                    </table>
-                </div>
-                <div class="alert d-none" id="mensagem"></div>
+                </section>
             </div>
-        </section>
-    </main>
+
+            <div class="alert d-none mt-4" id="mensagem"></div>
+        </main>
+    </section>
 
     <div class="modal fade" id="modalExclusao" tabindex="-1" aria-labelledby="modalExclusaoTitulo" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -128,8 +207,8 @@
                     <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="mb-1">Deseja excluir este aluno?</p>
-                    <strong id="alunoExclusaoNome"></strong>
+                    <p class="mb-1" id="exclusaoTexto">Deseja excluir este registro?</p>
+                    <strong id="registroExclusaoNome"></strong>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
@@ -139,7 +218,24 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalLoginErro" tabindex="-1" aria-labelledby="modalLoginErroTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title h5" id="modalLoginErroTitulo">Login inválido</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0" id="loginErroMensagem">Usuário ou senha inválidos.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="button" data-bs-dismiss="modal">Entendi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./app.js"></script>
+    <script src="./app.js?v=2"></script>
 </body>
 </html>

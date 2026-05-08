@@ -70,7 +70,7 @@ namespace GestaoAcademica.Migrations
                         new
                         {
                             Id = 1,
-                            Ativo = true,
+                            Ativo = false,
                             CursoId = 2,
                             DataNascimento = new DateOnly(2002, 4, 12),
                             Email = "ana.souza@academico.local",

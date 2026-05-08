@@ -1,9 +1,26 @@
 const apiBase = "/api";
 let token = localStorage.getItem("token") || "";
 let alunos = [];
-let alunoIdParaExcluir = null;
+let matriculas = [];
+let exclusaoAtual = null;
+
+const disciplinas = [
+    { id: 1, nome: "Algoritmos e Lógica de Programação", codigo: "ADS101" },
+    { id: 2, nome: "Estrutura de Dados", codigo: "ADS102" },
+    { id: 3, nome: "Análise de Sistemas", codigo: "SI101" },
+    { id: 4, nome: "Gestão de Projetos", codigo: "SI102" },
+    { id: 5, nome: "Cálculo I", codigo: "CC101" },
+    { id: 6, nome: "Teoria da Computação", codigo: "CC102" },
+    { id: 7, nome: "Arquitetura de Software", codigo: "ES101" },
+    { id: 8, nome: "Testes de Software", codigo: "ES102" },
+    { id: 9, nome: "Criptografia", codigo: "SEG101" },
+    { id: 10, nome: "Segurança de Redes", codigo: "SEG102" }
+];
 
 const elementos = {
+    loginPage: document.getElementById("loginPage"),
+    homePage: document.getElementById("homePage"),
+    loginForm: document.getElementById("loginForm"),
     usuario: document.getElementById("usuario"),
     senha: document.getElementById("senha"),
     btnLogin: document.getElementById("btnLogin"),
@@ -24,12 +41,20 @@ const elementos = {
     buscaAluno: document.getElementById("buscaAluno"),
     filtroCurso: document.getElementById("filtroCurso"),
     filtroStatus: document.getElementById("filtroStatus"),
+    matriculaForm: document.getElementById("matriculaForm"),
+    matriculaAlunoId: document.getElementById("matriculaAlunoId"),
+    matriculaDisciplinaId: document.getElementById("matriculaDisciplinaId"),
+    matriculasTabela: document.getElementById("matriculasTabela"),
     modalExclusao: document.getElementById("modalExclusao"),
-    alunoExclusaoNome: document.getElementById("alunoExclusaoNome"),
-    btnConfirmarExclusao: document.getElementById("btnConfirmarExclusao")
+    exclusaoTexto: document.getElementById("exclusaoTexto"),
+    registroExclusaoNome: document.getElementById("registroExclusaoNome"),
+    btnConfirmarExclusao: document.getElementById("btnConfirmarExclusao"),
+    modalLoginErro: document.getElementById("modalLoginErro"),
+    loginErroMensagem: document.getElementById("loginErroMensagem")
 };
 
 const modalExclusao = new bootstrap.Modal(elementos.modalExclusao);
+const modalLoginErro = new bootstrap.Modal(elementos.modalLoginErro);
 
 function cabecalhosJson() {
     const headers = { "Content-Type": "application/json" };
@@ -79,22 +104,47 @@ function definirCarregando(botao, carregando, textoCarregando = "Carregando...")
 }
 
 function mostrarMensagem(texto, tipo = "success") {
-    elementos.mensagem.className = `alert alert-${tipo}`;
+    elementos.mensagem.className = `alert alert-${tipo} mt-4`;
     elementos.mensagem.textContent = texto;
 }
 
-function atualizarStatusLogin() {
-    const logado = Boolean(token);
-
-    elementos.loginStatus.className = logado ? "alert alert-success mb-0" : "alert alert-secondary mb-0";
-    elementos.loginStatus.textContent = logado
-        ? "Login realizado. As operações protegidas podem ser executadas."
-        : "Use admin/123456 ou secretaria/123456.";
-
-    elementos.btnLogout.classList.toggle("d-none", !logado);
+function esconderMensagem() {
+    elementos.mensagem.className = "alert d-none mt-4";
+    elementos.mensagem.textContent = "";
 }
 
-async function login() {
+function mostrarTelaLogin() {
+    elementos.loginPage.classList.remove("d-none");
+    elementos.homePage.classList.add("d-none");
+    elementos.loginStatus.className = "alert alert-secondary mt-4 mb-0";
+    elementos.loginStatus.textContent = "Use admin/123456 ou secretaria/123456.";
+}
+
+function mostrarHome() {
+    elementos.loginPage.classList.add("d-none");
+    elementos.homePage.classList.remove("d-none");
+}
+
+async function iniciarHome() {
+    mostrarHome();
+    esconderMensagem();
+
+    try {
+        await carregarDadosHome();
+    } catch (erro) {
+        mostrarMensagem(erro.message, "danger");
+    }
+}
+
+async function carregarDadosHome() {
+    await carregarCursos();
+    await carregarAlunos();
+    preencherSelectDisciplinas();
+    await carregarMatriculas();
+}
+
+async function login(evento) {
+    evento.preventDefault();
     definirCarregando(elementos.btnLogin, true, "Entrando...");
 
     try {
@@ -108,13 +158,12 @@ async function login() {
 
         token = resultado.token;
         localStorage.setItem("token", token);
-        atualizarStatusLogin();
-        mostrarMensagem("Login realizado com sucesso.");
+        await iniciarHome();
     } catch (erro) {
         token = "";
         localStorage.removeItem("token");
-        atualizarStatusLogin();
-        mostrarMensagem(erro.message, "danger");
+        elementos.loginErroMensagem.textContent = erro.message || "Usuário ou senha inválidos.";
+        modalLoginErro.show();
     } finally {
         definirCarregando(elementos.btnLogin, false);
     }
@@ -123,13 +172,15 @@ async function login() {
 function logout() {
     token = "";
     localStorage.removeItem("token");
-    atualizarStatusLogin();
-    mostrarMensagem("Sessão encerrada.");
+    esconderMensagem();
+    mostrarTelaLogin();
 }
 
 async function carregarCursos() {
     const resultado = await requisicao(`${apiBase}/cursos`);
-    const opcoes = resultado.dados
+    const opcaoInicial = `<option value="" disabled selected>Selecione um curso</option>`;
+
+    const opcoes = opcaoInicial + resultado.dados
         .map(curso => `<option value="${curso.id}">${escaparHtml(curso.nome)}</option>`)
         .join("");
 
@@ -138,15 +189,10 @@ async function carregarCursos() {
 }
 
 async function carregarAlunos() {
-    definirCarregando(elementos.btnAtualizar, true, "Atualizando...");
-
-    try {
-        const resultado = await requisicao(`${apiBase}/alunos`);
-        alunos = resultado.dados;
-        renderizarTabela();
-    } finally {
-        definirCarregando(elementos.btnAtualizar, false);
-    }
+    const resultado = await requisicao(`${apiBase}/alunos`);
+    alunos = resultado.dados;
+    renderizarTabelaAlunos();
+    preencherSelectAlunosMatricula();
 }
 
 function filtrarAlunos() {
@@ -164,7 +210,7 @@ function filtrarAlunos() {
     });
 }
 
-function renderizarTabela() {
+function renderizarTabelaAlunos() {
     const alunosFiltrados = filtrarAlunos();
 
     if (!alunosFiltrados.length) {
@@ -183,7 +229,7 @@ function renderizarTabela() {
             </td>
             <td class="text-end">
                 <button class="btn btn-outline-secondary btn-sm" onclick="editarAluno(${aluno.id})">Editar</button>
-                <button class="btn btn-outline-danger btn-sm" onclick="abrirModalExclusao(${aluno.id})">Excluir</button>
+                <button class="btn btn-outline-danger btn-sm" onclick="abrirExclusaoAluno(${aluno.id})">Excluir</button>
             </td>
         </tr>
     `).join("");
@@ -245,26 +291,121 @@ async function salvarAluno(evento) {
     }
 }
 
-function abrirModalExclusao(id) {
+function preencherSelectAlunosMatricula() {
+    const alunosAtivos = alunos.filter(aluno => aluno.ativo);
+    const opcaoInicial = `<option value="" disabled selected>Selecione um aluno</option>`;
+
+    if (!alunosAtivos.length) {
+        elementos.matriculaAlunoId.innerHTML = `${opcaoInicial}<option value="" disabled>Nenhum aluno ativo disponível</option>`;
+        return;
+    }
+
+    elementos.matriculaAlunoId.innerHTML = opcaoInicial + alunosAtivos
+        .map(aluno => `<option value="${aluno.id}">${escaparHtml(aluno.nome)} - ${escaparHtml(aluno.matricula)}</option>`)
+        .join("");
+}
+
+function preencherSelectDisciplinas() {
+    const opcaoInicial = `<option value="" disabled selected>Selecione uma disciplina</option>`;
+
+    elementos.matriculaDisciplinaId.innerHTML = opcaoInicial + disciplinas
+        .map(disciplina => `<option value="${disciplina.id}">${escaparHtml(disciplina.codigo)} - ${escaparHtml(disciplina.nome)}</option>`)
+        .join("");
+}
+
+async function carregarMatriculas() {
+    const resultado = await requisicao(`${apiBase}/matriculas`);
+    matriculas = resultado.dados;
+    renderizarTabelaMatriculas();
+}
+
+function renderizarTabelaMatriculas() {
+    if (!matriculas.length) {
+        elementos.matriculasTabela.innerHTML = `<tr><td colspan="5" class="text-center py-4">Nenhuma matrícula realizada.</td></tr>`;
+        return;
+    }
+
+    elementos.matriculasTabela.innerHTML = matriculas.map(matricula => `
+        <tr>
+            <td>${escaparHtml(matricula.alunoNome)}</td>
+            <td>${escaparHtml(matricula.disciplinaNome)}</td>
+            <td>${formatarData(matricula.dataMatricula)}</td>
+            <td>${escaparHtml(matricula.status)}</td>
+            <td class="text-end">
+                <button class="btn btn-outline-danger btn-sm" onclick="abrirExclusaoMatricula(${matricula.id})">Excluir</button>
+            </td>
+        </tr>
+    `).join("");
+}
+
+function formatarData(valor) {
+    if (!valor) return "";
+    return new Date(valor).toLocaleDateString("pt-BR");
+}
+
+async function salvarMatricula(evento) {
+    evento.preventDefault();
+
+    const botao = elementos.matriculaForm.querySelector("button[type='submit']");
+    definirCarregando(botao, true, "Matriculando...");
+
+    try {
+        await requisicao(`${apiBase}/matriculas`, {
+            method: "POST",
+            body: JSON.stringify({
+                alunoId: Number(elementos.matriculaAlunoId.value),
+                disciplinaId: Number(elementos.matriculaDisciplinaId.value)
+            })
+        });
+
+        mostrarMensagem("Matrícula realizada com sucesso.");
+        elementos.matriculaForm.reset();
+        await carregarMatriculas();
+    } catch (erro) {
+        mostrarMensagem(erro.message, "danger");
+    } finally {
+        definirCarregando(botao, false);
+    }
+}
+
+function abrirExclusaoAluno(id) {
     const aluno = alunos.find(item => item.id === id);
     if (!aluno) return;
 
-    alunoIdParaExcluir = id;
-    elementos.alunoExclusaoNome.textContent = `${aluno.nome} - matrícula ${aluno.matricula}`;
+    exclusaoAtual = { tipo: "aluno", id };
+    elementos.exclusaoTexto.textContent = "Deseja excluir este aluno?";
+    elementos.registroExclusaoNome.textContent = `${aluno.nome} - matrícula ${aluno.matricula}`;
+    modalExclusao.show();
+}
+
+function abrirExclusaoMatricula(id) {
+    const matricula = matriculas.find(item => item.id === id);
+    if (!matricula) return;
+
+    exclusaoAtual = { tipo: "matricula", id };
+    elementos.exclusaoTexto.textContent = "Deseja excluir esta matrícula?";
+    elementos.registroExclusaoNome.textContent = `${matricula.alunoNome} - ${matricula.disciplinaNome}`;
     modalExclusao.show();
 }
 
 async function confirmarExclusao() {
-    if (!alunoIdParaExcluir) return;
+    if (!exclusaoAtual) return;
 
     definirCarregando(elementos.btnConfirmarExclusao, true, "Excluindo...");
 
     try {
-        await requisicao(`${apiBase}/alunos/${alunoIdParaExcluir}`, { method: "DELETE" });
-        mostrarMensagem("Aluno excluído com sucesso.");
+        if (exclusaoAtual.tipo === "aluno") {
+            await requisicao(`${apiBase}/alunos/${exclusaoAtual.id}`, { method: "DELETE" });
+            mostrarMensagem("Aluno excluído com sucesso.");
+            await carregarAlunos();
+        } else {
+            await requisicao(`${apiBase}/matriculas/${exclusaoAtual.id}`, { method: "DELETE" });
+            mostrarMensagem("Matrícula excluída com sucesso.");
+            await carregarMatriculas();
+        }
+
         modalExclusao.hide();
-        alunoIdParaExcluir = null;
-        await carregarAlunos();
+        exclusaoAtual = null;
     } catch (erro) {
         mostrarMensagem(erro.message, "danger");
     } finally {
@@ -272,17 +413,32 @@ async function confirmarExclusao() {
     }
 }
 
-elementos.btnLogin.addEventListener("click", login);
+async function atualizarDados() {
+    definirCarregando(elementos.btnAtualizar, true, "Atualizando...");
+
+    try {
+        await carregarDadosHome();
+        mostrarMensagem("Dados atualizados.");
+    } catch (erro) {
+        mostrarMensagem(erro.message, "danger");
+    } finally {
+        definirCarregando(elementos.btnAtualizar, false);
+    }
+}
+
+elementos.loginForm.addEventListener("submit", login);
 elementos.btnLogout.addEventListener("click", logout);
-elementos.btnAtualizar.addEventListener("click", carregarAlunos);
+elementos.btnAtualizar.addEventListener("click", atualizarDados);
 elementos.btnCancelar.addEventListener("click", limparFormulario);
 elementos.form.addEventListener("submit", salvarAluno);
-elementos.buscaAluno.addEventListener("input", renderizarTabela);
-elementos.filtroCurso.addEventListener("change", renderizarTabela);
-elementos.filtroStatus.addEventListener("change", renderizarTabela);
+elementos.matriculaForm.addEventListener("submit", salvarMatricula);
+elementos.buscaAluno.addEventListener("input", renderizarTabelaAlunos);
+elementos.filtroCurso.addEventListener("change", renderizarTabelaAlunos);
+elementos.filtroStatus.addEventListener("change", renderizarTabelaAlunos);
 elementos.btnConfirmarExclusao.addEventListener("click", confirmarExclusao);
 
-atualizarStatusLogin();
-carregarCursos()
-    .then(carregarAlunos)
-    .catch(erro => mostrarMensagem(erro.message, "danger"));
+if (token) {
+    iniciarHome();
+} else {
+    mostrarTelaLogin();
+}
