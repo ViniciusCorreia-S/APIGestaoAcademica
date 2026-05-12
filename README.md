@@ -1,6 +1,6 @@
 # Sistema de Gestao Academica
 
-Projeto academico simples em ASP.NET Core Web API (.NET 10) para gerenciamento academico.
+Projeto em ASP.NET Core Web API (.NET 10) para gerenciamento academico.
 
 ## Tema
 
@@ -33,7 +33,7 @@ Configure a string de conexao em `appsettings.json`:
 
 ```json
 "ConnectionStrings": {
-  "ConexaoPadrao": "server=localhost;port=3306;database=gestao_academica;user=root;password=123456"
+  "ConexaoPadrao": "server=localhost;port=3306;database=gestao_academicaDB;user=root;password=123456"
 }
 ```
 
@@ -51,8 +51,8 @@ dotnet run
 
 Ao iniciar, acesse:
 
-- Swagger: `https://localhost:7216/swagger`
-- Interface web: `https://localhost:7216/index.html`
+- Swagger: `https://localhost:7198/swagger`
+- Interface web: `https://localhost:7198/index.html`
 
 Se a porta mudar, veja o endereco mostrado no terminal ou em `Properties/launchSettings.json`.
 
@@ -72,13 +72,3 @@ Se a porta mudar, veja o endereco mostrado no terminal ou em `Properties/launchS
 - `POST /api/cursos`: somente Administrador.
 - `POST /api/matriculas`: Administrador ou Secretaria.
 - `DELETE /api/matriculas/{id}`: somente Administrador.
-
-## Testes no Postman
-
-1. Envie `POST /api/auth/login` com `admin` e `123456`.
-2. Copie o token retornado.
-3. No Postman, use Authorization tipo `Bearer Token`.
-4. Teste os endpoints `GET`, `POST`, `PUT` e `DELETE` de alunos.
-5. Confirme que exclusao funciona com `admin` e retorna `403 Forbidden` com `secretaria`.
-
-O arquivo `GestaoAcademica.http` tambem contem exemplos prontos de chamadas.
