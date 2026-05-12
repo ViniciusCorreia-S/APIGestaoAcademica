@@ -12,10 +12,12 @@ namespace GestaoAcademica.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(IConfiguration configuration)
+    public AuthController(IConfiguration configuration, ILogger<AuthController> logger)
     {
         _configuration = configuration;
+        _logger = logger;
     }
 
     [HttpPost("login")]
@@ -33,6 +35,8 @@ public class AuthController : ControllerBase
         }
 
         var token = GerarToken(login.Usuario, perfil);
+
+        _logger.LogInformation($"Usuário {login.Usuario} logado com sucesso.");
 
         return Ok(new
         {

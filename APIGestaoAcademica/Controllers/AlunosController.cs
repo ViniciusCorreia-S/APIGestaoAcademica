@@ -12,10 +12,12 @@ namespace GestaoAcademica.Controllers;
 public class AlunosController : ControllerBase
 {
     private readonly IAlunoService _service;
+    private readonly ILogger<AlunosController> _logger;
 
-    public AlunosController(IAlunoService service)
+    public AlunosController(IAlunoService service, ILogger<AlunosController> logger)
     {
         _service = service;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -47,6 +49,9 @@ public class AlunosController : ControllerBase
         try
         {
             var aluno = await _service.CriarAsync(dto);
+
+            _logger.LogInformation($"Aluno criado: {aluno.Id} - {aluno.Nome}");
+
             // Retorna 201 Created com a localização do novo recurso e os dados do aluno criado
             return CreatedAtAction(nameof(GetById), new { id = aluno.Id }, new
             {
@@ -54,6 +59,7 @@ public class AlunosController : ControllerBase
                 mensagem = "Aluno cadastrado com sucesso.",
                 dados = aluno
             });
+
         }
         catch (InvalidOperationException ex)
         {
