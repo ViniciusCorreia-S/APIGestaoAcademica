@@ -175,6 +175,9 @@ namespace GestaoAcademica.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<int>("CursoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(120)
@@ -184,6 +187,8 @@ namespace GestaoAcademica.Migrations
 
                     b.HasIndex("Codigo")
                         .IsUnique();
+
+                    b.HasIndex("CursoId");
 
                     b.ToTable("Disciplinas");
 
@@ -324,6 +329,17 @@ namespace GestaoAcademica.Migrations
                     b.Navigation("Curso");
                 });
 
+            modelBuilder.Entity("GestaoAcademica.Models.Disciplina", b =>
+                {
+                    b.HasOne("GestaoAcademica.Models.Curso", "Curso")
+                        .WithMany("Disciplinas")
+                        .HasForeignKey("CursoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Curso");
+                });
+
             modelBuilder.Entity("GestaoAcademica.Models.MatriculaDisciplina", b =>
                 {
                     b.HasOne("GestaoAcademica.Models.Aluno", "Aluno")
@@ -351,6 +367,8 @@ namespace GestaoAcademica.Migrations
             modelBuilder.Entity("GestaoAcademica.Models.Curso", b =>
                 {
                     b.Navigation("Alunos");
+
+                    b.Navigation("Disciplinas");
                 });
 
             modelBuilder.Entity("GestaoAcademica.Models.Disciplina", b =>

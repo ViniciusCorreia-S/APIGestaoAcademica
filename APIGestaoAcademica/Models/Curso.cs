@@ -15,4 +15,5 @@ public class Curso
     public int DuracaoSemestres { get; set; }
 
     public ICollection<Aluno> Alunos { get; set; } = [];
+    public ICollection<Disciplina> Disciplinas { get; set; } = [];
 }

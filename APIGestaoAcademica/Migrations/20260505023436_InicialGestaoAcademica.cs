@@ -47,11 +47,18 @@ namespace GestaoAcademica.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Codigo = table.Column<string>(type: "varchar(20)", maxLength: 20, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CargaHoraria = table.Column<int>(type: "int", nullable: false)
+                    CargaHoraria = table.Column<int>(type: "int", nullable: false),
+                    CursoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Disciplinas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Disciplinas_Cursos_CursoId",
+                        column: x => x.CursoId,
+                        principalTable: "Cursos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -131,29 +138,29 @@ namespace GestaoAcademica.Migrations
 			// ================================== TABELA DISCIPLINAS ==================================
 			migrationBuilder.InsertData(
 	            table: "Disciplinas",
-	            columns: new[] { "Id", "CargaHoraria", "Codigo", "Nome" },
+	            columns: new[] { "Id", "CargaHoraria", "Codigo", "CursoId", "Nome" },
 	            values: new object[,]
 	            {
                     // ===== ADS (CursoId = 1) =====
-                    { 1, 80, "ADS101", "Algoritmos e Logica de Programacao" },
-		            { 2, 80, "ADS102", "Estrutura de Dados" },
+                    { 1, 80, "ADS101", 1, "Algoritmos e Logica de Programacao" },
+		            { 2, 80, "ADS102", 1, "Estrutura de Dados" },
 
                     // ===== Sistemas de Informacao (CursoId = 2) =====
                    
-		            { 3, 80, "SI101", "Analise de Sistemas" },
-		            { 4, 80, "SI102", "Gestao de Projetos" },
+		            { 3, 80, "SI101", 2, "Analise de Sistemas" },
+		            { 4, 80, "SI102", 2, "Gestao de Projetos" },
 
                     // ===== Ciencia da Computacao (CursoId = 3) =====
-                    { 5, 80, "CC101", "Calculo I" },
-		            { 6, 80, "CC102", "Teoria da Computacao" },
+                    { 5, 80, "CC101", 3, "Calculo I" },
+		            { 6, 80, "CC102", 3, "Teoria da Computacao" },
                     // ===== Engenharia de Software (CursoId = 4) =====
                    
-		            { 7, 80, "ES101", "Arquitetura de Software" },
-		            { 8, 80, "ES102", "Testes de Software" },
+		            { 7, 80, "ES101", 4, "Arquitetura de Software" },
+		            { 8, 80, "ES102", 4, "Testes de Software" },
 
                     // ===== Seguranca da Informacao (CursoId = 5) =====
-                    { 9, 80, "SEG101", "Criptografia" },
-		            { 10, 80, "SEG102", "Seguranca de Redes" },
+                    { 9, 80, "SEG101", 5, "Criptografia" },
+		            { 10, 80, "SEG102", 5, "Seguranca de Redes" },
 	            });
             
 			// ================================== TABELA ALUNOS ==================================
@@ -196,6 +203,11 @@ namespace GestaoAcademica.Migrations
                 table: "Disciplinas",
                 column: "Codigo",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Disciplinas_CursoId",
+                table: "Disciplinas",
+                column: "CursoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MatriculasDisciplinas_AlunoId_DisciplinaId",

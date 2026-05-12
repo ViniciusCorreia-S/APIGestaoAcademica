@@ -1,22 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GestaoAcademica.Models;
+namespace GestaoAcademica.DTOs;
 
-public class Disciplina
+public class DisciplinaUpdateDto
 {
-    public int Id { get; set; }
-
     [Required, MaxLength(120)]
     public string Nome { get; set; } = string.Empty;
 
     [Required, MaxLength(20)]
     public string Codigo { get; set; } = string.Empty;
 
+    [Range(1, 400, ErrorMessage = "Informe uma carga horaria valida.")]
     public int CargaHoraria { get; set; }
 
+    [Range(1, int.MaxValue, ErrorMessage = "Informe um curso valido.")]
     public int CursoId { get; set; }
-    public Curso? Curso { get; set; }
-
-    // Relacionamento muitos-para-muitos com Aluno via MatriculaDisciplina
-    public ICollection<MatriculaDisciplina> Matriculas { get; set; } = [];
 }

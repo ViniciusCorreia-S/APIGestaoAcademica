@@ -61,9 +61,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Registrando os repositórios e serviços para injeção de dependência
 builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
 builder.Services.AddScoped<ICursoRepository, CursoRepository>();
+builder.Services.AddScoped<IDisciplinaRepository, DisciplinaRepository>();
 builder.Services.AddScoped<IMatriculaRepository, MatriculaRepository>();
 builder.Services.AddScoped<IAlunoService, AlunoService>();
 builder.Services.AddScoped<ICursoService, CursoService>();
+builder.Services.AddScoped<IDisciplinaService, DisciplinaService>();
 builder.Services.AddScoped<IMatriculaService, MatriculaService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]

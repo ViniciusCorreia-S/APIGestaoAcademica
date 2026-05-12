@@ -1,21 +1,9 @@
 const apiBase = "/api";
 let token = localStorage.getItem("token") || "";
 let alunos = [];
+let disciplinas = [];
 let matriculas = [];
 let exclusaoAtual = null;
-
-const disciplinas = [
-    { id: 1, nome: "Algoritmos e Lógica de Programação", codigo: "ADS101" },
-    { id: 2, nome: "Estrutura de Dados", codigo: "ADS102" },
-    { id: 3, nome: "Análise de Sistemas", codigo: "SI101" },
-    { id: 4, nome: "Gestão de Projetos", codigo: "SI102" },
-    { id: 5, nome: "Cálculo I", codigo: "CC101" },
-    { id: 6, nome: "Teoria da Computação", codigo: "CC102" },
-    { id: 7, nome: "Arquitetura de Software", codigo: "ES101" },
-    { id: 8, nome: "Testes de Software", codigo: "ES102" },
-    { id: 9, nome: "Criptografia", codigo: "SEG101" },
-    { id: 10, nome: "Segurança de Redes", codigo: "SEG102" }
-];
 
 const elementos = {
     loginPage: document.getElementById("loginPage"),
@@ -41,6 +29,14 @@ const elementos = {
     buscaAluno: document.getElementById("buscaAluno"),
     filtroCurso: document.getElementById("filtroCurso"),
     filtroStatus: document.getElementById("filtroStatus"),
+    disciplinaForm: document.getElementById("disciplinaForm"),
+    disciplinaId: document.getElementById("disciplinaId"),
+    disciplinaNome: document.getElementById("disciplinaNome"),
+    disciplinaCodigo: document.getElementById("disciplinaCodigo"),
+    disciplinaCargaHoraria: document.getElementById("disciplinaCargaHoraria"),
+    disciplinaCursoId: document.getElementById("disciplinaCursoId"),
+    disciplinasTabela: document.getElementById("disciplinasTabela"),
+    btnCancelarDisciplina: document.getElementById("btnCancelarDisciplina"),
     matriculaForm: document.getElementById("matriculaForm"),
     matriculaAlunoId: document.getElementById("matriculaAlunoId"),
     matriculaDisciplinaId: document.getElementById("matriculaDisciplinaId"),
@@ -139,7 +135,7 @@ async function iniciarHome() {
 async function carregarDadosHome() {
     await carregarCursos();
     await carregarAlunos();
-    preencherSelectDisciplinas();
+    await carregarDisciplinas();
     await carregarMatriculas();
 }
 
@@ -179,13 +175,13 @@ function logout() {
 async function carregarCursos() {
     const resultado = await requisicao(`${apiBase}/cursos`);
     const opcaoInicial = `<option value="" disabled selected>Selecione um curso</option>`;
-
-    const opcoes = opcaoInicial + resultado.dados
+    const opcoesCursos = resultado.dados
         .map(curso => `<option value="${curso.id}">${escaparHtml(curso.nome)}</option>`)
         .join("");
 
-    elementos.cursoId.innerHTML = opcoes;
-    elementos.filtroCurso.innerHTML = `<option value="">Todos os cursos</option>${opcoes}`;
+    elementos.cursoId.innerHTML = opcaoInicial + opcoesCursos;
+    elementos.disciplinaCursoId.innerHTML = opcaoInicial + opcoesCursos;
+    elementos.filtroCurso.innerHTML = `<option value="">Todos os cursos</option>${opcoesCursos}`;
 }
 
 async function carregarAlunos() {
@@ -291,6 +287,79 @@ async function salvarAluno(evento) {
     }
 }
 
+async function carregarDisciplinas() {
+    const resultado = await requisicao(`${apiBase}/disciplinas`);
+    disciplinas = resultado.dados;
+    renderizarTabelaDisciplinas();
+    preencherSelectDisciplinas();
+}
+
+function renderizarTabelaDisciplinas() {
+    if (!disciplinas.length) {
+        elementos.disciplinasTabela.innerHTML = `<tr><td colspan="5" class="text-center py-4">Nenhuma disciplina cadastrada.</td></tr>`;
+        return;
+    }
+
+    elementos.disciplinasTabela.innerHTML = disciplinas.map(disciplina => `
+        <tr>
+            <td>${escaparHtml(disciplina.codigo)}</td>
+            <td>${escaparHtml(disciplina.nome)}</td>
+            <td>${escaparHtml(disciplina.cursoNome)}</td>
+            <td>${disciplina.cargaHoraria}h</td>
+            <td class="text-end">
+                <button class="btn btn-outline-secondary btn-sm" onclick="editarDisciplina(${disciplina.id})">Editar</button>
+                <button class="btn btn-outline-danger btn-sm" onclick="abrirExclusaoDisciplina(${disciplina.id})">Excluir</button>
+            </td>
+        </tr>
+    `).join("");
+}
+
+function editarDisciplina(id) {
+    const disciplina = disciplinas.find(item => item.id === id);
+    if (!disciplina) return;
+
+    elementos.disciplinaId.value = disciplina.id;
+    elementos.disciplinaNome.value = disciplina.nome;
+    elementos.disciplinaCodigo.value = disciplina.codigo;
+    elementos.disciplinaCargaHoraria.value = disciplina.cargaHoraria;
+    elementos.disciplinaCursoId.value = disciplina.cursoId;
+}
+
+function limparFormularioDisciplina() {
+    elementos.disciplinaForm.reset();
+    elementos.disciplinaId.value = "";
+}
+
+async function salvarDisciplina(evento) {
+    evento.preventDefault();
+
+    const id = elementos.disciplinaId.value;
+    const corpo = {
+        nome: elementos.disciplinaNome.value,
+        codigo: elementos.disciplinaCodigo.value,
+        cargaHoraria: Number(elementos.disciplinaCargaHoraria.value),
+        cursoId: Number(elementos.disciplinaCursoId.value)
+    };
+
+    const botaoSalvar = elementos.disciplinaForm.querySelector("button[type='submit']");
+    definirCarregando(botaoSalvar, true, "Salvando...");
+
+    try {
+        await requisicao(id ? `${apiBase}/disciplinas/${id}` : `${apiBase}/disciplinas`, {
+            method: id ? "PUT" : "POST",
+            body: JSON.stringify(corpo)
+        });
+
+        mostrarMensagem(id ? "Disciplina atualizada com sucesso." : "Disciplina cadastrada com sucesso.");
+        limparFormularioDisciplina();
+        await carregarDisciplinas();
+    } catch (erro) {
+        mostrarMensagem(erro.message, "danger");
+    } finally {
+        definirCarregando(botaoSalvar, false);
+    }
+}
+
 function preencherSelectAlunosMatricula() {
     const alunosAtivos = alunos.filter(aluno => aluno.ativo);
     const opcaoInicial = `<option value="" disabled selected>Selecione um aluno</option>`;
@@ -307,6 +376,11 @@ function preencherSelectAlunosMatricula() {
 
 function preencherSelectDisciplinas() {
     const opcaoInicial = `<option value="" disabled selected>Selecione uma disciplina</option>`;
+
+    if (!disciplinas.length) {
+        elementos.matriculaDisciplinaId.innerHTML = `${opcaoInicial}<option value="" disabled>Nenhuma disciplina disponível</option>`;
+        return;
+    }
 
     elementos.matriculaDisciplinaId.innerHTML = opcaoInicial + disciplinas
         .map(disciplina => `<option value="${disciplina.id}">${escaparHtml(disciplina.codigo)} - ${escaparHtml(disciplina.nome)}</option>`)
@@ -378,6 +452,16 @@ function abrirExclusaoAluno(id) {
     modalExclusao.show();
 }
 
+function abrirExclusaoDisciplina(id) {
+    const disciplina = disciplinas.find(item => item.id === id);
+    if (!disciplina) return;
+
+    exclusaoAtual = { tipo: "disciplina", id };
+    elementos.exclusaoTexto.textContent = "Deseja excluir esta disciplina?";
+    elementos.registroExclusaoNome.textContent = `${disciplina.codigo} - ${disciplina.nome}`;
+    modalExclusao.show();
+}
+
 function abrirExclusaoMatricula(id) {
     const matricula = matriculas.find(item => item.id === id);
     if (!matricula) return;
@@ -398,6 +482,10 @@ async function confirmarExclusao() {
             await requisicao(`${apiBase}/alunos/${exclusaoAtual.id}`, { method: "DELETE" });
             mostrarMensagem("Aluno excluído com sucesso.");
             await carregarAlunos();
+        } else if (exclusaoAtual.tipo === "disciplina") {
+            await requisicao(`${apiBase}/disciplinas/${exclusaoAtual.id}`, { method: "DELETE" });
+            mostrarMensagem("Disciplina excluída com sucesso.");
+            await carregarDisciplinas();
         } else {
             await requisicao(`${apiBase}/matriculas/${exclusaoAtual.id}`, { method: "DELETE" });
             mostrarMensagem("Matrícula excluída com sucesso.");
@@ -431,6 +519,8 @@ elementos.btnLogout.addEventListener("click", logout);
 elementos.btnAtualizar.addEventListener("click", atualizarDados);
 elementos.btnCancelar.addEventListener("click", limparFormulario);
 elementos.form.addEventListener("submit", salvarAluno);
+elementos.disciplinaForm.addEventListener("submit", salvarDisciplina);
+elementos.btnCancelarDisciplina.addEventListener("click", limparFormularioDisciplina);
 elementos.matriculaForm.addEventListener("submit", salvarMatricula);
 elementos.buscaAluno.addEventListener("input", renderizarTabelaAlunos);
 elementos.filtroCurso.addEventListener("change", renderizarTabelaAlunos);

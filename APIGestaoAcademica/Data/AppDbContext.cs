@@ -49,24 +49,24 @@ public class AppDbContext : DbContext
         // Dados estaticos para teste
         modelBuilder.Entity<Disciplina>().HasData(
             // ===== ADS (CursoId = 1) =====
-            new Disciplina { Id = 1, Nome = "Algoritmos e Logica de Programacao", Codigo = "ADS101", CargaHoraria = 80 },
-            new Disciplina { Id = 2, Nome = "Estrutura de Dados", Codigo = "ADS102", CargaHoraria = 80 },
+            new Disciplina { Id = 1, Nome = "Algoritmos e Logica de Programacao", Codigo = "ADS101", CargaHoraria = 80, CursoId = 1 },
+            new Disciplina { Id = 2, Nome = "Estrutura de Dados", Codigo = "ADS102", CargaHoraria = 80, CursoId = 1 },
 
             // ===== Sistemas de Informacao (CursoId = 2) =====
-            new Disciplina { Id = 3, Nome = "Analise de Sistemas", Codigo = "SI101", CargaHoraria = 80 },
-            new Disciplina { Id = 4, Nome = "Gestao de Projetos", Codigo = "SI102", CargaHoraria = 80 },
+            new Disciplina { Id = 3, Nome = "Analise de Sistemas", Codigo = "SI101", CargaHoraria = 80, CursoId = 2 },
+            new Disciplina { Id = 4, Nome = "Gestao de Projetos", Codigo = "SI102", CargaHoraria = 80, CursoId = 2 },
 
             // ===== Ciencia da Computacao (CursoId = 3) =====
-            new Disciplina { Id = 5, Nome = "Calculo I", Codigo = "CC101", CargaHoraria = 80 },
-            new Disciplina { Id = 6, Nome = "Teoria da Computacao", Codigo = "CC102", CargaHoraria = 80 },
+            new Disciplina { Id = 5, Nome = "Calculo I", Codigo = "CC101", CargaHoraria = 80, CursoId = 3 },
+            new Disciplina { Id = 6, Nome = "Teoria da Computacao", Codigo = "CC102", CargaHoraria = 80, CursoId = 3 },
 
             // ===== Engenharia de Software (CursoId = 4) =====
-            new Disciplina { Id = 7, Nome = "Arquitetura de Software", Codigo = "ES101", CargaHoraria = 80 },
-            new Disciplina { Id = 8, Nome = "Testes de Software", Codigo = "ES102", CargaHoraria = 80 },
+            new Disciplina { Id = 7, Nome = "Arquitetura de Software", Codigo = "ES101", CargaHoraria = 80, CursoId = 4 },
+            new Disciplina { Id = 8, Nome = "Testes de Software", Codigo = "ES102", CargaHoraria = 80, CursoId = 4 },
 
             // ===== Seguranca da Informacao (CursoId = 5) =====
-            new Disciplina { Id = 9, Nome = "Criptografia", Codigo = "SEG101", CargaHoraria = 80 },
-            new Disciplina { Id = 10, Nome = "Seguranca de Redes", Codigo = "SEG102", CargaHoraria = 80 }
+            new Disciplina { Id = 9, Nome = "Criptografia", Codigo = "SEG101", CargaHoraria = 80, CursoId = 5 },
+            new Disciplina { Id = 10, Nome = "Seguranca de Redes", Codigo = "SEG102", CargaHoraria = 80, CursoId = 5 }
         );
 
         // Dados estaticos para teste
