@@ -136,7 +136,9 @@ namespace APIGestaoAcademica.Migrations
                 values: new object[,]
                 {
                     { 1, true, 1, new DateOnly(2008, 3, 17), "viniciuscorreia@academico.local", "20260002", "Vinicius Correia" },
-                    { 2, false, 2, new DateOnly(2002, 4, 12), "ana.souza@academico.local", "20260001", "Ana Souza" }
+                    { 2, false, 2, new DateOnly(2002, 4, 12), "ana.souza@academico.local", "20260001", "Ana Souza" },
+                    { 3, true, 3, new DateOnly(2004, 8, 25), "mariana.lima@academico.local", "20260003", "Mariana Lima" },
+                    { 4, true, 4, new DateOnly(2003, 11, 9), "carlos.pereira@academico.local", "20260004", "Carlos Pereira" }
                 });
 
             migrationBuilder.InsertData(
@@ -154,6 +156,19 @@ namespace APIGestaoAcademica.Migrations
                     { 8, 80, "ES102", 4, "Testes de Software" },
                     { 9, 80, "SEG101", 5, "Criptografia" },
                     { 10, 80, "SEG102", 5, "Seguranca de Redes" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MatriculasDisciplinas",
+                columns: new[] { "Id", "AlunoId", "DataMatricula", "DisciplinaId", "Status" },
+                values: new object[,]
+                {
+                    { 1, 1, new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), 1, "Cursando" },
+                    { 2, 1, new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), 2, "Cursando" },
+                    { 3, 3, new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), 5, "Cursando" },
+                    { 4, 3, new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), 6, "Cursando" },
+                    { 5, 4, new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), 7, "Cursando" },
+                    { 6, 4, new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), 8, "Cursando" }
                 });
 
             migrationBuilder.CreateIndex(

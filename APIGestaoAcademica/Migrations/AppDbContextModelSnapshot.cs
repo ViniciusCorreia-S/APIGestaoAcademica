@@ -86,6 +86,26 @@ namespace APIGestaoAcademica.Migrations
                             Email = "ana.souza@academico.local",
                             Matricula = "20260001",
                             Nome = "Ana Souza"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Ativo = true,
+                            CursoId = 3,
+                            DataNascimento = new DateOnly(2004, 8, 25),
+                            Email = "mariana.lima@academico.local",
+                            Matricula = "20260003",
+                            Nome = "Mariana Lima"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Ativo = true,
+                            CursoId = 4,
+                            DataNascimento = new DateOnly(2003, 11, 9),
+                            Email = "carlos.pereira@academico.local",
+                            Matricula = "20260004",
+                            Nome = "Carlos Pereira"
                         });
                 });
 
@@ -301,6 +321,56 @@ namespace APIGestaoAcademica.Migrations
                         .IsUnique();
 
                     b.ToTable("MatriculasDisciplinas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AlunoId = 1,
+                            DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, 0, DateTimeKind.Utc),
+                            DisciplinaId = 1,
+                            Status = "Cursando"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AlunoId = 1,
+                            DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, 0, DateTimeKind.Utc),
+                            DisciplinaId = 2,
+                            Status = "Cursando"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AlunoId = 3,
+                            DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, 0, DateTimeKind.Utc),
+                            DisciplinaId = 5,
+                            Status = "Cursando"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AlunoId = 3,
+                            DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, 0, DateTimeKind.Utc),
+                            DisciplinaId = 6,
+                            Status = "Cursando"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AlunoId = 4,
+                            DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, 0, DateTimeKind.Utc),
+                            DisciplinaId = 7,
+                            Status = "Cursando"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AlunoId = 4,
+                            DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, 0, DateTimeKind.Utc),
+                            DisciplinaId = 8,
+                            Status = "Cursando"
+                        });
                 });
 
             modelBuilder.Entity("GestaoAcademica.Models.Aluno", b =>

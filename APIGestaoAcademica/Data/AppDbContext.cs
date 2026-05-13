@@ -90,7 +90,36 @@ public class AppDbContext : DbContext
                 DataNascimento = new DateOnly(2002, 4, 12),
                 Ativo = false,
                 CursoId = 2
+            },
+            new Aluno
+            {
+                Id = 3,
+                Nome = "Mariana Lima",
+                Email = "mariana.lima@academico.local",
+                Matricula = "20260003",
+                DataNascimento = new DateOnly(2004, 8, 25),
+                Ativo = true,
+                CursoId = 3
+            },
+            new Aluno
+            {
+                Id = 4,
+                Nome = "Carlos Pereira",
+                Email = "carlos.pereira@academico.local",
+                Matricula = "20260004",
+                DataNascimento = new DateOnly(2003, 11, 9),
+                Ativo = true,
+                CursoId = 4
             }
+        );
+
+        modelBuilder.Entity<MatriculaDisciplina>().HasData(
+            new MatriculaDisciplina { Id = 1, AlunoId = 1, DisciplinaId = 1, DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), Status = "Cursando" },
+            new MatriculaDisciplina { Id = 2, AlunoId = 1, DisciplinaId = 2, DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), Status = "Cursando" },
+            new MatriculaDisciplina { Id = 3, AlunoId = 3, DisciplinaId = 5, DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), Status = "Cursando" },
+            new MatriculaDisciplina { Id = 4, AlunoId = 3, DisciplinaId = 6, DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), Status = "Cursando" },
+            new MatriculaDisciplina { Id = 5, AlunoId = 4, DisciplinaId = 7, DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), Status = "Cursando" },
+            new MatriculaDisciplina { Id = 6, AlunoId = 4, DisciplinaId = 8, DataMatricula = new DateTime(2026, 5, 13, 12, 0, 0, DateTimeKind.Utc), Status = "Cursando" }
         );
     }
 }
