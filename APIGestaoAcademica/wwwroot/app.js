@@ -2,6 +2,7 @@
 const apiBase = "/api";
 let token = localStorage.getItem("token") || "";
 let alunos = [];
+let cursos = [];
 let disciplinas = [];
 let matriculas = [];
 let exclusaoAtual = null;
@@ -31,6 +32,24 @@ const elementos = {
     buscaAluno: document.getElementById("buscaAluno"),
     filtroCurso: document.getElementById("filtroCurso"),
     filtroStatus: document.getElementById("filtroStatus"),
+    dashTotalAlunos: document.getElementById("dashTotalAlunos"),
+    dashAlunosAtivos: document.getElementById("dashAlunosAtivos"),
+    dashTotalCursos: document.getElementById("dashTotalCursos"),
+    dashMediaAlunosCurso: document.getElementById("dashMediaAlunosCurso"),
+    dashTotalDisciplinas: document.getElementById("dashTotalDisciplinas"),
+    dashCargaHoraria: document.getElementById("dashCargaHoraria"),
+    dashTotalMatriculas: document.getElementById("dashTotalMatriculas"),
+    dashUltimaMatricula: document.getElementById("dashUltimaMatricula"),
+    dashAlunosPorCurso: document.getElementById("dashAlunosPorCurso"),
+    dashResumoRelatorios: document.getElementById("dashResumoRelatorios"),
+    dashUltimasMatriculas: document.getElementById("dashUltimasMatriculas"),
+    cursoForm: document.getElementById("cursoForm"),
+    cursoCadastroId: document.getElementById("cursoCadastroId"),
+    cursoNome: document.getElementById("cursoNome"),
+    cursoCodigo: document.getElementById("cursoCodigo"),
+    cursoDuracaoSemestres: document.getElementById("cursoDuracaoSemestres"),
+    cursosTabela: document.getElementById("cursosTabela"),
+    btnCancelarCurso: document.getElementById("btnCancelarCurso"),
     disciplinaForm: document.getElementById("disciplinaForm"),
     disciplinaId: document.getElementById("disciplinaId"),
     disciplinaNome: document.getElementById("disciplinaNome"),
@@ -72,7 +91,17 @@ async function requisicao(url, opcoes = {}) {
     });
 
     const texto = await resposta.text();
-    const corpo = texto ? JSON.parse(texto) : {};
+    let corpo = {};
+
+    try {
+        corpo = texto ? JSON.parse(texto) : {};
+    } catch {
+        const mensagem = texto.includes("MySql") || texto.includes("Exception")
+            ? "Nao foi possivel acessar os dados. Verifique se o banco de dados esta configurado e disponivel."
+            : texto.slice(0, 220) || "Resposta invalida da API.";
+
+        corpo = { mensagem };
+    }
 
     if (!resposta.ok) {
         throw new Error(corpo.mensagem || "Não foi possível concluir a operação.");
@@ -129,6 +158,7 @@ function mostrarHome() {
 async function iniciarHome() {
     mostrarHome();
     esconderMensagem();
+    renderizarDashboard();
 
     try {
         await carregarDadosHome();
@@ -142,6 +172,7 @@ async function carregarDadosHome() {
     await carregarAlunos();
     await carregarDisciplinas();
     await carregarMatriculas();
+    renderizarDashboard();
 }
 
 // ====================Função de login
@@ -180,14 +211,86 @@ function logout() {
 
 async function carregarCursos() {
     const resultado = await requisicao(`${apiBase}/cursos`);
+    cursos = resultado.dados;
+    preencherSelectsCursos();
+    renderizarTabelaCursos();
+}
+
+function preencherSelectsCursos() {
     const opcaoInicial = `<option value="" disabled selected>Selecione um curso</option>`;
-    const opcoesCursos = resultado.dados
+    const opcoesCursos = cursos
         .map(curso => `<option value="${curso.id}">${escaparHtml(curso.nome)}</option>`)
         .join("");
 
     elementos.cursoId.innerHTML = opcaoInicial + opcoesCursos;
     elementos.disciplinaCursoId.innerHTML = opcaoInicial + opcoesCursos;
     elementos.filtroCurso.innerHTML = `<option value="">Todos os cursos</option>${opcoesCursos}`;
+}
+
+function renderizarTabelaCursos() {
+    if (!cursos.length) {
+        elementos.cursosTabela.innerHTML = `<tr><td colspan="4" class="text-center py-4">Nenhum curso cadastrado.</td></tr>`;
+        return;
+    }
+
+    elementos.cursosTabela.innerHTML = cursos.map(curso => `
+        <tr>
+            <td>${escaparHtml(curso.codigo)}</td>
+            <td>${escaparHtml(curso.nome)}</td>
+            <td>${curso.duracaoSemestres} semestres</td>
+            <td class="text-end">
+                <button class="btn btn-outline-secondary btn-sm" onclick="editarCurso(${curso.id})">Editar</button>
+                <button class="btn btn-outline-danger btn-sm" onclick="abrirExclusaoCurso(${curso.id})">Excluir</button>
+            </td>
+        </tr>
+    `).join("");
+}
+
+function editarCurso(id) {
+    const curso = cursos.find(item => item.id === id);
+    if (!curso) return;
+
+    elementos.cursoCadastroId.value = curso.id;
+    elementos.cursoNome.value = curso.nome;
+    elementos.cursoCodigo.value = curso.codigo;
+    elementos.cursoDuracaoSemestres.value = curso.duracaoSemestres;
+}
+
+function limparFormularioCurso() {
+    elementos.cursoForm.reset();
+    elementos.cursoCadastroId.value = "";
+}
+
+async function salvarCurso(evento) {
+    evento.preventDefault();
+
+    const id = elementos.cursoCadastroId.value;
+    const corpo = {
+        nome: elementos.cursoNome.value,
+        codigo: elementos.cursoCodigo.value,
+        duracaoSemestres: Number(elementos.cursoDuracaoSemestres.value)
+    };
+
+    const botaoSalvar = elementos.cursoForm.querySelector("button[type='submit']");
+    definirCarregando(botaoSalvar, true, "Salvando...");
+
+    try {
+        await requisicao(id ? `${apiBase}/cursos/${id}` : `${apiBase}/cursos`, {
+            method: id ? "PUT" : "POST",
+            body: JSON.stringify(corpo)
+        });
+
+        mostrarMensagem(id ? "Curso atualizado com sucesso." : "Curso cadastrado com sucesso.");
+        limparFormularioCurso();
+        await carregarCursos();
+        await carregarAlunos();
+        await carregarDisciplinas();
+        renderizarDashboard();
+    } catch (erro) {
+        mostrarMensagem(erro.message, "danger");
+    } finally {
+        definirCarregando(botaoSalvar, false);
+    }
 }
 
 async function carregarAlunos() {
@@ -286,6 +389,7 @@ async function salvarAluno(evento) {
         mostrarMensagem(id ? "Aluno atualizado com sucesso." : "Aluno cadastrado com sucesso.");
         limparFormulario();
         await carregarAlunos();
+        renderizarDashboard();
     } catch (erro) {
         mostrarMensagem(erro.message, "danger");
     } finally {
@@ -359,6 +463,7 @@ async function salvarDisciplina(evento) {
         mostrarMensagem(id ? "Disciplina atualizada com sucesso." : "Disciplina cadastrada com sucesso.");
         limparFormularioDisciplina();
         await carregarDisciplinas();
+        renderizarDashboard();
     } catch (erro) {
         mostrarMensagem(erro.message, "danger");
     } finally {
@@ -423,6 +528,134 @@ function formatarData(valor) {
     return new Date(valor).toLocaleDateString("pt-BR");
 }
 
+function calcularPercentual(valor, total) {
+    if (!total) return 0;
+    return Math.round((valor / total) * 100);
+}
+
+function renderizarDashboard() {
+    const alunosAtivos = alunos.filter(aluno => aluno.ativo).length;
+    const alunosInativos = alunos.length - alunosAtivos;
+    const cargaHorariaTotal = disciplinas.reduce((total, disciplina) => total + Number(disciplina.cargaHoraria || 0), 0);
+    const mediaAlunosCurso = cursos.length ? (alunos.length / cursos.length).toFixed(1).replace(".", ",") : "0";
+    const ultimaMatricula = matriculas
+        .slice()
+        .sort((a, b) => new Date(b.dataMatricula) - new Date(a.dataMatricula))[0];
+
+    elementos.dashTotalAlunos.textContent = alunos.length;
+    elementos.dashAlunosAtivos.textContent = `${alunosAtivos} ativos e ${alunosInativos} inativos`;
+    elementos.dashTotalCursos.textContent = cursos.length;
+    elementos.dashMediaAlunosCurso.textContent = `${mediaAlunosCurso} alunos por curso`;
+    elementos.dashTotalDisciplinas.textContent = disciplinas.length;
+    elementos.dashCargaHoraria.textContent = `${cargaHorariaTotal}h cadastradas`;
+    elementos.dashTotalMatriculas.textContent = matriculas.length;
+    elementos.dashUltimaMatricula.textContent = ultimaMatricula ? `Ultima em ${formatarData(ultimaMatricula.dataMatricula)}` : "Sem registro recente";
+
+    renderizarAlunosPorCurso();
+    renderizarResumoRelatorios(alunosAtivos, alunosInativos, cargaHorariaTotal);
+    renderizarUltimasMatriculas();
+}
+
+function renderizarAlunosPorCurso() {
+    if (!cursos.length) {
+        elementos.dashAlunosPorCurso.innerHTML = `<p class="text-muted mb-0">Cadastre cursos para visualizar a distribuicao de alunos.</p>`;
+        return;
+    }
+
+    const maiorQuantidade = Math.max(...cursos.map(curso => alunos.filter(aluno => aluno.cursoId === curso.id).length), 1);
+
+    elementos.dashAlunosPorCurso.innerHTML = cursos.map(curso => {
+        const totalAlunos = alunos.filter(aluno => aluno.cursoId === curso.id).length;
+        const percentualBarra = calcularPercentual(totalAlunos, maiorQuantidade);
+        const percentualTotal = calcularPercentual(totalAlunos, alunos.length);
+
+        return `
+            <div class="course-progress">
+                <div class="d-flex justify-content-between gap-3">
+                    <span>${escaparHtml(curso.nome)}</span>
+                    <strong>${totalAlunos} aluno${totalAlunos === 1 ? "" : "s"}</strong>
+                </div>
+                <div class="progress" role="progressbar" aria-label="${escaparHtml(curso.nome)}" aria-valuenow="${percentualTotal}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" style="width: ${percentualBarra}%"></div>
+                </div>
+                <small class="text-muted">${percentualTotal}% do total de alunos</small>
+            </div>
+        `;
+    }).join("");
+}
+
+function renderizarResumoRelatorios(alunosAtivos, alunosInativos, cargaHorariaTotal) {
+    const cursoMaisAlunos = cursos
+        .map(curso => ({
+            nome: curso.nome,
+            total: alunos.filter(aluno => aluno.cursoId === curso.id).length
+        }))
+        .sort((a, b) => b.total - a.total)[0];
+
+    const disciplinaMaiorCarga = disciplinas
+        .slice()
+        .sort((a, b) => Number(b.cargaHoraria || 0) - Number(a.cargaHoraria || 0))[0];
+
+    const itens = [
+        {
+            rotulo: "Alunos ativos",
+            valor: `${alunosAtivos} de ${alunos.length}`,
+            detalhe: `${calcularPercentual(alunosAtivos, alunos.length)}% da base cadastrada`
+        },
+        {
+            rotulo: "Alunos inativos",
+            valor: alunosInativos,
+            detalhe: "Use este dado para acompanhamento de evasao ou desligamentos"
+        },
+        {
+            rotulo: "Curso com mais alunos",
+            valor: cursoMaisAlunos && cursoMaisAlunos.total ? cursoMaisAlunos.nome : "Sem alunos vinculados",
+            detalhe: cursoMaisAlunos && cursoMaisAlunos.total ? `${cursoMaisAlunos.total} aluno${cursoMaisAlunos.total === 1 ? "" : "s"}` : "Cadastre alunos para gerar o ranking"
+        },
+        {
+            rotulo: "Maior carga horaria",
+            valor: disciplinaMaiorCarga ? disciplinaMaiorCarga.nome : "Sem disciplinas",
+            detalhe: disciplinaMaiorCarga ? `${disciplinaMaiorCarga.cargaHoraria}h de ${cargaHorariaTotal}h totais` : "Cadastre disciplinas para calcular"
+        }
+    ];
+
+    elementos.dashResumoRelatorios.innerHTML = itens.map(item => `
+        <div class="list-group-item report-item">
+            <span>${escaparHtml(item.rotulo)}</span>
+            <strong>${escaparHtml(item.valor)}</strong>
+            <small>${escaparHtml(item.detalhe)}</small>
+        </div>
+    `).join("");
+}
+
+function renderizarUltimasMatriculas() {
+    const ultimas = matriculas
+        .slice()
+        .sort((a, b) => new Date(b.dataMatricula) - new Date(a.dataMatricula))
+        .slice(0, 5);
+
+    if (!ultimas.length) {
+        elementos.dashUltimasMatriculas.innerHTML = `<tr><td colspan="4" class="text-center py-4">Nenhuma matricula realizada.</td></tr>`;
+        return;
+    }
+
+    elementos.dashUltimasMatriculas.innerHTML = ultimas.map(matricula => `
+        <tr>
+            <td>${escaparHtml(matricula.alunoNome)}</td>
+            <td>${escaparHtml(matricula.disciplinaNome)}</td>
+            <td>${formatarData(matricula.dataMatricula)}</td>
+            <td>${escaparHtml(matricula.status)}</td>
+        </tr>
+    `).join("");
+}
+
+function abrirAbaPorSeletor(seletor) {
+    const botao = document.querySelector(`[data-bs-target="${seletor}"]`);
+    if (!botao) return;
+
+    bootstrap.Tab.getOrCreateInstance(botao).show();
+}
+
 async function salvarMatricula(evento) {
     evento.preventDefault();
 
@@ -441,6 +674,7 @@ async function salvarMatricula(evento) {
         mostrarMensagem("Matrícula realizada com sucesso.");
         elementos.matriculaForm.reset();
         await carregarMatriculas();
+        renderizarDashboard();
     } catch (erro) {
         mostrarMensagem(erro.message, "danger");
     } finally {
@@ -455,6 +689,16 @@ function abrirExclusaoAluno(id) {
     exclusaoAtual = { tipo: "aluno", id };
     elementos.exclusaoTexto.textContent = "Deseja excluir este aluno?";
     elementos.registroExclusaoNome.textContent = `${aluno.nome} - matrícula ${aluno.matricula}`;
+    modalExclusao.show();
+}
+
+function abrirExclusaoCurso(id) {
+    const curso = cursos.find(item => item.id === id);
+    if (!curso) return;
+
+    exclusaoAtual = { tipo: "curso", id };
+    elementos.exclusaoTexto.textContent = "Deseja excluir este curso?";
+    elementos.registroExclusaoNome.textContent = `${curso.codigo} - ${curso.nome}`;
     modalExclusao.show();
 }
 
@@ -488,6 +732,10 @@ async function confirmarExclusao() {
             await requisicao(`${apiBase}/alunos/${exclusaoAtual.id}`, { method: "DELETE" });
             mostrarMensagem("Aluno excluído com sucesso.");
             await carregarAlunos();
+        } else if (exclusaoAtual.tipo === "curso") {
+            await requisicao(`${apiBase}/cursos/${exclusaoAtual.id}`, { method: "DELETE" });
+            mostrarMensagem("Curso excluído com sucesso.");
+            await carregarCursos();
         } else if (exclusaoAtual.tipo === "disciplina") {
             await requisicao(`${apiBase}/disciplinas/${exclusaoAtual.id}`, { method: "DELETE" });
             mostrarMensagem("Disciplina excluída com sucesso.");
@@ -498,6 +746,7 @@ async function confirmarExclusao() {
             await carregarMatriculas();
         }
 
+        renderizarDashboard();
         modalExclusao.hide();
         exclusaoAtual = null;
     } catch (erro) {
@@ -526,6 +775,8 @@ elementos.btnLogout.addEventListener("click", logout);
 elementos.btnAtualizar.addEventListener("click", atualizarDados);
 elementos.btnCancelar.addEventListener("click", limparFormulario);
 elementos.form.addEventListener("submit", salvarAluno);
+elementos.cursoForm.addEventListener("submit", salvarCurso);
+elementos.btnCancelarCurso.addEventListener("click", limparFormularioCurso);
 elementos.disciplinaForm.addEventListener("submit", salvarDisciplina);
 elementos.btnCancelarDisciplina.addEventListener("click", limparFormularioDisciplina);
 elementos.matriculaForm.addEventListener("submit", salvarMatricula);
@@ -533,6 +784,9 @@ elementos.buscaAluno.addEventListener("input", renderizarTabelaAlunos);
 elementos.filtroCurso.addEventListener("change", renderizarTabelaAlunos);
 elementos.filtroStatus.addEventListener("change", renderizarTabelaAlunos);
 elementos.btnConfirmarExclusao.addEventListener("click", confirmarExclusao);
+document.querySelectorAll("[data-ir-aba]").forEach(botao => {
+    botao.addEventListener("click", () => abrirAbaPorSeletor(botao.dataset.irAba));
+});
 
 // =============Verifica se o usuário já está logado ao carregar a página
 if (token) {
