@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace GestaoAcademica.Migrations
+namespace APIGestaoAcademica.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260505023436_InicialGestaoAcademica")]
+    [Migration("20260513121714_InicialGestaoAcademica")]
     partial class InicialGestaoAcademica
     {
         /// <inheritdoc />
@@ -75,6 +75,16 @@ namespace GestaoAcademica.Migrations
                             Id = 1,
                             Ativo = true,
                             CursoId = 1,
+                            DataNascimento = new DateOnly(2008, 3, 17),
+                            Email = "viniciuscorreia@academico.local",
+                            Matricula = "20260002",
+                            Nome = "Vinicius Correia"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Ativo = false,
+                            CursoId = 2,
                             DataNascimento = new DateOnly(2002, 4, 12),
                             Email = "ana.souza@academico.local",
                             Matricula = "20260001",
@@ -124,6 +134,27 @@ namespace GestaoAcademica.Migrations
                             Codigo = "SI",
                             DuracaoSemestres = 8,
                             Nome = "Sistemas de Informacao"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Codigo = "CC",
+                            DuracaoSemestres = 8,
+                            Nome = "Ciencia da Computacao"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Codigo = "ES",
+                            DuracaoSemestres = 8,
+                            Nome = "Engenharia de Software"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Codigo = "SEG",
+                            DuracaoSemestres = 6,
+                            Nome = "Seguranca da Informacao"
                         });
                 });
 
@@ -143,6 +174,9 @@ namespace GestaoAcademica.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
+                    b.Property<int>("CursoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(120)
@@ -153,6 +187,8 @@ namespace GestaoAcademica.Migrations
                     b.HasIndex("Codigo")
                         .IsUnique();
 
+                    b.HasIndex("CursoId");
+
                     b.ToTable("Disciplinas");
 
                     b.HasData(
@@ -160,15 +196,81 @@ namespace GestaoAcademica.Migrations
                         {
                             Id = 1,
                             CargaHoraria = 80,
-                            Codigo = "WEB101",
-                            Nome = "Programacao Web"
+                            Codigo = "ADS101",
+                            CursoId = 1,
+                            Nome = "Algoritmos e Logica de Programacao"
                         },
                         new
                         {
                             Id = 2,
                             CargaHoraria = 80,
-                            Codigo = "BD101",
-                            Nome = "Banco de Dados"
+                            Codigo = "ADS102",
+                            CursoId = 1,
+                            Nome = "Estrutura de Dados"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CargaHoraria = 80,
+                            Codigo = "SI101",
+                            CursoId = 2,
+                            Nome = "Analise de Sistemas"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CargaHoraria = 80,
+                            Codigo = "SI102",
+                            CursoId = 2,
+                            Nome = "Gestao de Projetos"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CargaHoraria = 80,
+                            Codigo = "CC101",
+                            CursoId = 3,
+                            Nome = "Calculo I"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CargaHoraria = 80,
+                            Codigo = "CC102",
+                            CursoId = 3,
+                            Nome = "Teoria da Computacao"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CargaHoraria = 80,
+                            Codigo = "ES101",
+                            CursoId = 4,
+                            Nome = "Arquitetura de Software"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CargaHoraria = 80,
+                            Codigo = "ES102",
+                            CursoId = 4,
+                            Nome = "Testes de Software"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CargaHoraria = 80,
+                            Codigo = "SEG101",
+                            CursoId = 5,
+                            Nome = "Criptografia"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CargaHoraria = 80,
+                            Codigo = "SEG102",
+                            CursoId = 5,
+                            Nome = "Seguranca de Redes"
                         });
                 });
 
@@ -215,6 +317,17 @@ namespace GestaoAcademica.Migrations
                     b.Navigation("Curso");
                 });
 
+            modelBuilder.Entity("GestaoAcademica.Models.Disciplina", b =>
+                {
+                    b.HasOne("GestaoAcademica.Models.Curso", "Curso")
+                        .WithMany("Disciplinas")
+                        .HasForeignKey("CursoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Curso");
+                });
+
             modelBuilder.Entity("GestaoAcademica.Models.MatriculaDisciplina", b =>
                 {
                     b.HasOne("GestaoAcademica.Models.Aluno", "Aluno")
@@ -242,6 +355,8 @@ namespace GestaoAcademica.Migrations
             modelBuilder.Entity("GestaoAcademica.Models.Curso", b =>
                 {
                     b.Navigation("Alunos");
+
+                    b.Navigation("Disciplinas");
                 });
 
             modelBuilder.Entity("GestaoAcademica.Models.Disciplina", b =>
