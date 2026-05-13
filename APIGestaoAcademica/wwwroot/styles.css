@@ -1,5 +1,21 @@
+:root {
+    --color-primary: #2f5d50;
+    --color-primary-dark: #24483f;
+    --color-secondary: #c08a4b;
+    --color-secondary-dark: #9f6f38;
+    --color-page: #f4f1ea;
+    --color-surface: #ffffff;
+    --color-text: #1f2933;
+    --color-muted: #65717c;
+    --color-border: #ddd6c9;
+    --color-soft: #e7d8bd;
+    --color-success: #2f855a;
+    --color-danger: #c2410c;
+}
+
 body {
-    background: #f7f8fb;
+    background: var(--color-page);
+    color: var(--color-text);
 }
 
 .login-page {
@@ -11,6 +27,13 @@ body {
 
 .login-card {
     border: 0;
+}
+
+.login-card,
+.card,
+.modal-content {
+    background: var(--color-surface);
+    border-color: var(--color-border);
 }
 
 .logo-badge {
@@ -26,12 +49,86 @@ body {
     padding: 0.5rem 0.75rem;
 }
 
+.text-bg-primary,
+.btn-primary {
+    background-color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--color-primary-dark) !important;
+    border-color: var(--color-primary-dark) !important;
+}
+
+.btn-success {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+}
+
+.btn-success:hover,
+.btn-success:focus {
+    background-color: #276f4d;
+    border-color: #276f4d;
+}
+
+.btn-danger {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+    background-color: #9a3412;
+    border-color: #9a3412;
+}
+
+.btn-outline-primary {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+
+.btn-outline-secondary {
+    border-color: var(--color-border);
+    color: var(--color-text);
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+    background-color: var(--color-soft);
+    border-color: var(--color-soft);
+    color: var(--color-text);
+}
+
+.btn-outline-danger {
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}
+
+.btn-outline-danger:hover,
+.btn-outline-danger:focus {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+    color: #fff;
+}
+
+.bg-body-tertiary {
+    background-color: #fbfaf7 !important;
+}
+
 .card {
     border-radius: 8px;
 }
 
 .table {
-    background: #fff;
+    background: var(--color-surface);
 }
 
 .table td,
@@ -45,16 +142,138 @@ body {
 }
 
 .nav-tabs .nav-link {
-    color: #495057;
+    color: var(--color-muted);
     font-weight: 500;
 }
 
 .nav-tabs .nav-link.active {
-    color: #0d6efd;
+    background: var(--color-surface);
+    border-color: var(--color-border) var(--color-border) var(--color-surface);
+    color: var(--color-primary);
 }
 
 .form-label {
     font-weight: 500;
+}
+
+.dashboard-hero {
+    align-items: flex-start;
+    background: var(--color-primary);
+    border-radius: 8px;
+    color: #fff;
+    display: flex;
+    gap: 1.5rem;
+    justify-content: space-between;
+    padding: 1.5rem;
+}
+
+.dashboard-hero p {
+    color: rgba(255, 255, 255, .84);
+    max-width: 680px;
+}
+
+.metric-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 0.5rem 1.25rem rgba(47, 93, 80, .08);
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    min-height: 132px;
+    padding: 1rem;
+}
+
+.metric-card strong {
+    color: var(--color-primary);
+    font-size: 2.35rem;
+    line-height: 1;
+}
+
+.metric-card small,
+.metric-label {
+    color: var(--color-muted);
+}
+
+.metric-label {
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.dashboard-panel {
+    height: 100%;
+}
+
+.course-progress {
+    display: grid;
+    gap: .45rem;
+}
+
+.course-progress + .course-progress {
+    border-top: 1px solid var(--color-border);
+    margin-top: 1rem;
+    padding-top: 1rem;
+}
+
+.course-progress .progress {
+    background-color: #efe8dc;
+    height: .6rem;
+}
+
+.course-progress .progress-bar {
+    background-color: var(--color-secondary);
+}
+
+.report-item {
+    display: grid;
+    gap: .2rem;
+}
+
+.report-item span {
+    color: var(--color-muted);
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.report-item strong {
+    color: var(--color-text);
+}
+
+.report-item small {
+    color: var(--color-muted);
+}
+
+.form-control,
+.form-select {
+    border-color: var(--color-border);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 .25rem rgba(192, 138, 75, .18);
+}
+
+.alert-secondary {
+    background-color: #f0e6d4;
+    border-color: var(--color-soft);
+    color: var(--color-text);
+}
+
+.alert-success {
+    background-color: #e5f3eb;
+    border-color: #b7dec7;
+    color: #205c3e;
+}
+
+.alert-danger {
+    background-color: #fff1e8;
+    border-color: #f6c7aa;
+    color: var(--color-danger);
 }
 
 .alert:empty {
@@ -70,14 +289,26 @@ body {
 }
 
 .status-dot.active {
-    background: #198754;
+    background: var(--color-success);
 }
 
 .status-dot.inactive {
-    background: #dc3545;
+    background: var(--color-danger);
 }
 
 @media (max-width: 576px) {
+    .dashboard-hero {
+        padding: 1rem;
+    }
+
+    .metric-card {
+        min-height: 120px;
+    }
+
+    .metric-card strong {
+        font-size: 1.9rem;
+    }
+
     .table td,
     .table th {
         font-size: .92rem;
@@ -85,5 +316,11 @@ body {
 
     .text-end .btn {
         margin-top: .25rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-hero {
+        flex-direction: column;
     }
 }
