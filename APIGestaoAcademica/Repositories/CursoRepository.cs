@@ -23,14 +23,33 @@ public class CursoRepository : ICursoRepository
         return await _context.Cursos.FindAsync(id);
     }
 
-    public async Task<bool> ExisteCodigoAsync(string codigo)
+    public async Task<bool> ExisteCodigoAsync(string codigo, int? ignorarCursoId = null)
     {
-        return await _context.Cursos.AnyAsync(curso => curso.Codigo == codigo);
+        return await _context.Cursos.AnyAsync(curso =>
+            curso.Codigo == codigo && (!ignorarCursoId.HasValue || curso.Id != ignorarCursoId));
+    }
+
+    public async Task<bool> PossuiVinculosAsync(int cursoId)
+    {
+        return await _context.Alunos.AnyAsync(aluno => aluno.CursoId == cursoId)
+            || await _context.Disciplinas.AnyAsync(disciplina => disciplina.CursoId == cursoId);
     }
 
     public async Task AdicionarAsync(Curso curso)
     {
         await _context.Cursos.AddAsync(curso);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task AtualizarAsync(Curso curso)
+    {
+        _context.Cursos.Update(curso);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task RemoverAsync(Curso curso)
+    {
+        _context.Cursos.Remove(curso);
         await _context.SaveChangesAsync();
     }
 }
