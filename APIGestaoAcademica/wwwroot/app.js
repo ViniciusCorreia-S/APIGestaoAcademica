@@ -1,3 +1,4 @@
+// =========Variáveis globais
 const apiBase = "/api";
 let token = localStorage.getItem("token") || "";
 let alunos = [];
@@ -5,6 +6,7 @@ let disciplinas = [];
 let matriculas = [];
 let exclusaoAtual = null;
 
+// =============Elementos DOM
 const elementos = {
     loginPage: document.getElementById("loginPage"),
     homePage: document.getElementById("homePage"),
@@ -49,6 +51,7 @@ const elementos = {
     loginErroMensagem: document.getElementById("loginErroMensagem")
 };
 
+// =============Inicialização dos modais
 const modalExclusao = new bootstrap.Modal(elementos.modalExclusao);
 const modalLoginErro = new bootstrap.Modal(elementos.modalLoginErro);
 
@@ -58,6 +61,7 @@ function cabecalhosJson() {
     return headers;
 }
 
+// ===================Função genérica para fazer requisições à API
 async function requisicao(url, opcoes = {}) {
     const resposta = await fetch(url, {
         ...opcoes,
@@ -77,6 +81,7 @@ async function requisicao(url, opcoes = {}) {
     return corpo;
 }
 
+// ============Substitui caracteres especiais por suas entidades HTML para evitar XSS
 function escaparHtml(valor) {
     return String(valor ?? "")
         .replaceAll("&", "&amp;")
@@ -139,6 +144,7 @@ async function carregarDadosHome() {
     await carregarMatriculas();
 }
 
+// ====================Função de login
 async function login(evento) {
     evento.preventDefault();
     definirCarregando(elementos.btnLogin, true, "Entrando...");
@@ -514,6 +520,7 @@ async function atualizarDados() {
     }
 }
 
+// ====================Eventos
 elementos.loginForm.addEventListener("submit", login);
 elementos.btnLogout.addEventListener("click", logout);
 elementos.btnAtualizar.addEventListener("click", atualizarDados);
@@ -527,6 +534,7 @@ elementos.filtroCurso.addEventListener("change", renderizarTabelaAlunos);
 elementos.filtroStatus.addEventListener("change", renderizarTabelaAlunos);
 elementos.btnConfirmarExclusao.addEventListener("click", confirmarExclusao);
 
+// =============Verifica se o usuário já está logado ao carregar a página
 if (token) {
     iniciarHome();
 } else {
