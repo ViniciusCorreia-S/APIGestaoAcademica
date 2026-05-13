@@ -134,12 +134,31 @@ function definirCarregando(botao, carregando, textoCarregando = "Carregando...")
 }
 
 function mostrarMensagem(texto, tipo = "success") {
-    elementos.mensagem.className = `alert alert-${tipo} mt-4`;
-    elementos.mensagem.textContent = texto;
+    const configuracoes = {
+        success: { titulo: "Sucesso", icone: "OK" },
+        danger: { titulo: "Atenção", icone: "!" },
+        warning: { titulo: "Aviso", icone: "!" },
+        info: { titulo: "Informação", icone: "i" }
+    };
+    const config = configuracoes[tipo] || configuracoes.info;
+
+    elementos.mensagem.className = `app-alert app-alert-${tipo}`;
+    elementos.mensagem.setAttribute("role", "alert");
+    elementos.mensagem.innerHTML = `
+        <div class="app-alert-icon" aria-hidden="true"><span>${config.icone}</span></div>
+        <div class="app-alert-content">
+            <strong>${config.titulo}</strong>
+            <span>${escaparHtml(texto)}</span>
+        </div>
+        <button class="app-alert-close" type="button" aria-label="Fechar alerta">X</button>
+    `;
+
+    elementos.mensagem.querySelector(".app-alert-close").addEventListener("click", esconderMensagem);
 }
 
 function esconderMensagem() {
-    elementos.mensagem.className = "alert d-none mt-4";
+    elementos.mensagem.className = "app-alert d-none";
+    elementos.mensagem.removeAttribute("role");
     elementos.mensagem.textContent = "";
 }
 

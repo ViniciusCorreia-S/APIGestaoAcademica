@@ -276,6 +276,94 @@ body {
     color: var(--color-danger);
 }
 
+.app-alert {
+    align-items: stretch;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 1rem 2.25rem rgba(31, 41, 51, .18);
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr) auto;
+    max-width: min(92vw, 520px);
+    min-height: 96px;
+    overflow: hidden;
+    position: fixed;
+    right: 1.25rem;
+    top: 1.25rem;
+    width: 520px;
+    z-index: 1080;
+}
+
+.app-alert-icon {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.app-alert-icon span {
+    align-items: center;
+    background: #2b2f33;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    font-size: 1rem;
+    font-weight: 800;
+    height: 2.4rem;
+    justify-content: center;
+    letter-spacing: 0;
+    width: 2.4rem;
+}
+
+.app-alert-content {
+    display: grid;
+    gap: .35rem;
+    padding: 1.1rem 1rem;
+}
+
+.app-alert-content strong {
+    color: var(--color-text);
+    font-size: 1.05rem;
+}
+
+.app-alert-content span {
+    color: var(--color-muted);
+    font-size: .92rem;
+    line-height: 1.35;
+}
+
+.app-alert-close {
+    align-self: start;
+    background: transparent;
+    border: 0;
+    color: var(--color-muted);
+    font-size: .95rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: .85rem .85rem 0 0;
+    padding: .35rem;
+}
+
+.app-alert-close:hover,
+.app-alert-close:focus {
+    color: var(--color-text);
+}
+
+.app-alert-success .app-alert-icon {
+    background: #e7f7df;
+}
+
+.app-alert-danger .app-alert-icon {
+    background: #f9dddd;
+}
+
+.app-alert-warning .app-alert-icon {
+    background: #fff8cf;
+}
+
+.app-alert-info .app-alert-icon {
+    background: #e7d8bd;
+}
+
 .alert:empty {
     display: none;
 }
