@@ -29,6 +29,23 @@ body {
     border: 0;
 }
 
+.login-card h1 {
+    font-family: "Oswald", sans-serif;
+    margin-top: 3.5rem;
+}
+
+.card-body {
+    position: relative;
+}
+
+.login-card img {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    max-width: 110px;
+    height: auto;
+}
+
 .login-card,
 .card,
 .modal-content {
@@ -42,6 +59,7 @@ body {
 
 .navbar-brand {
     letter-spacing: 0;
+    font-family: "Oswald", sans-serif;
 }
 
 .logo-badge {
